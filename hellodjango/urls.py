@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+import hellodjango
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
@@ -18,4 +18,6 @@ urlpatterns = patterns('',
     
     url(r'^$', 'app.views.index'),
 )
-
+urlpatterns += patterns('',  
+(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': hellodjango.settings.STATIC_ROOT}),  
+)  
