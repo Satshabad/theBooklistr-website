@@ -1,0 +1,32 @@
+<div class="clearfix {% if errors %} error {% endif %}{% if required %} required{% endif %}">
+	{% if label %}
+	<label>{{label}}:</label>
+	{% else %}
+	{{fields.0.field.label}}	
+	{% endif %}
+	<div class="input">
+		<div class="inline-inputs">
+			{% for field in fields %}
+				{% if field.field %}
+					{# it's a field #}
+					{{field.field}}
+				{% else %}
+					{# it's a text #}
+					{{field}}
+				{% endif %}
+			{% endfor %}
+			{% if after %}
+			<span class="help-inline">{{after}}</span>
+			{% endif %}
+			{% if errors %}
+			{% for error in errors %}
+			<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{error}}</span>
+			{% endfor %}
+			{% else %}
+			{% for help_text in help %}
+			<span class="help-{% if help_inline %}inline{% else %}block{% endif %}">{{help_text}}</span>
+			{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+</div>
