@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import SellBookForm
+from forms import ContactSellerForm
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
@@ -59,5 +60,6 @@ def about(request):
 
 def index(request):
     #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
-    c = RequestContext(request)
+    form = ContactSellerForm()
+    c = RequestContext(request, {'form':form})
     return render_to_response("hero.html", c)
