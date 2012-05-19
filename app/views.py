@@ -10,14 +10,17 @@ def sell(request):
     if request.method == 'POST':
         form = SellBookForm(request.POST)
         if form.is_valid():
-            cd = form.cleand_data()
-          
-        # DO STUFF ###
-          
+            
+            # FOR RYAN, INSERT THESE INTO THE DB
+            
+            isbn = form.cleaned_data['isbn']
+            email = form.cleaned_data['email']
+            price = form.form.cleaned_data['price']
+            condition = form.cleaned_data['condition']
+            
           # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks.html')
         else:
-            print 'here'
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
     form = SellBookForm()
 
