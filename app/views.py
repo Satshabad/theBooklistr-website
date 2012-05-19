@@ -3,6 +3,7 @@ from django.template import RequestContext
 from forms import SellBookForm
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
 
 # include this decorator on all post request view functions
 @csrf_protect
@@ -57,5 +58,6 @@ def about(request):
     return render_to_response("about.html", c)
 
 def index(request):
+    send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
     c = RequestContext(request)
     return render_to_response("hero.html", c)
