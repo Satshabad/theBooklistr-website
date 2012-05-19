@@ -1,6 +1,4 @@
-
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -11,16 +9,48 @@
   <!-- Le styles -->
     <link href="../static/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
+        body {
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+        #search #search-area #search-box button {
+            height:58px;
+            width:58px;
+        }
+       #search #search-area #search-box input {
+           height:48px;
+           line-height:1.5;
+           font-size:36px;
+        }
+
+       .visuallyhidden{
+            height:1px;
+            width:1px;
+            margin:-1px;
+            padding:0;
+            border:0;
+            clip:rect(0 0 0 0);
+            position:absolute;
+            overflow:hidden;
+        } 
+
+       #search #main-title{
+            margin-top:30px;
+        }
+
+        #search #main-title h1{
+            font-weight:300;
+            font-size:80px;
+            height:100px;
+            line-height:1;
+        } 
+
     </style>
     <link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <!-- Le fav and touch icons -->
@@ -32,48 +62,60 @@
     
 </head>
 
-<body>
-	<div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Project name</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="/sell">Sell A Book</a></li>
-              <li class="active"><a href="/buy">Buy A Book</a></li>
-              <li><a href="/about">About</a></li>
-              <li><a href="/contact">Contact</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+<body id="search">
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="#">Project name</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/sell">Sell A Book</a></li>
+                        <li class="active"><a href="/buy">Buy A Book</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/contact">Contact</a></li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div>
         </div>
-      </div>
-    </div>
+    </div> <!--/End navbar section -->
+    
+    <!-- main content -->
     <div class="container">
-      <div class="row">
-        <div class="span12">
-
+        <div class="row">
+            <div id="main-title" class="span8">
+                <h1>Search by class</h1>
+            </div>
         </div>
-      </div>
-
-    </div>
-
-
-
-
-
-
+        <br>
+        <div class="row">
+            <div class="span12">
+                <div id="search-area">
+                    <form class="form-search" method="GET" action="/buy">
+                        <input type="hidden" name="has_releases" value="on">
+                        <div class="control-group">
+                            <div class="controls">
+                                <div id="search-box" class="input-append">
+                                    <input id="id_q" name="q" type="text" placeholder="i.e. CS241" class="span11 input-large">
+                                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i><span class="visuallyhidden">Search</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <hr>
+    <hr>
     <footer>
       <p>&copy; Company 2012</p>
     </footer>
-
     </div> <!-- /container -->
-
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
