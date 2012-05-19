@@ -59,14 +59,23 @@
 					<div class="span7">
 						<h1>How this works</h1>
 						<p>
-							You give us a little information about the book and your email address. We will list it on this site and keep your email private. 
+							You give us a little information about the book and your email address. We will list it on this site and keep your email private.
 							If anyone wants to buy your book, we'll email you with their contact information. We never reveal your email address to anyone.
 						<p>
 					</div>
-					<div class="span3">
-						{{ form|bootstrap }}
-						<p> <a class="btn btn-primary btn-large">List your book &raquo;</a> <p>
-					</div>
+					<form method="POST" action="/sell">
+						{% csrf_token %}
+						<div class="span3">
+							{% if form.errors %}
+							<p style="color: red;">
+								Please correct the error{{ form.errors|pluralize }} below.
+							</p>
+							{% endif %}
+
+							{{ form|bootstrap }}
+							<input class="btn btn-primary btn-large" type="submit" value="List your book &raquo;">
+						</div>
+					</form>
 				</div>
 			</div>
 			<footer>
