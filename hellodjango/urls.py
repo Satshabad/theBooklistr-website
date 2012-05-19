@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 
     
     url(r'^$', 'app.views.index'),
+    url(r'^sell$', 'app.views.sell', name='sell')
 )
 urlpatterns += patterns('',  
 (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': hellodjango.settings.STATIC_ROOT}),  
