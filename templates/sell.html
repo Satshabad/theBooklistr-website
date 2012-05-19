@@ -55,10 +55,29 @@
       </div>
     </div>
 
+<!--
+    TODO Header could possibly contain more information about
+    posting book information.
+-->
     <div class="container">
+        <div class="row">
+            <div class="offset3 span4">
+                <h1>Post your book</h1>
+                <hr>
+            </div>
+        </div>
+
+<!-- 
+    TODO implement correct post book url for form action
+    (Currently points to home page)
+-->
+
       <div class="row">
-        <div class="span4">
-          {{ form|bootstrap }}
+        <div class="offset3 span4">
+            <form name="input" action="/" method="get">
+              {{ form|bootstrap }}
+              <input type="submit" value="Submit">
+            </form> 
         </div>
         <div class="span8">
         
@@ -67,11 +86,13 @@
 
     </div>
 
+    <hr>
+    <div class="container">
 
-    <footer>
-      <p>&copy; Company 2012</p>
-    </footer>
-
+        <footer>
+          <p>&copy; Company 2012</p>
+        </footer>
+    </div>
     </div> <!-- /container -->
 
     <!-- Le javascript
