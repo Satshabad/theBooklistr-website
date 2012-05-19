@@ -111,6 +111,31 @@
             </div>
         </div>
     <hr>
+    
+    {% for book in books %}
+        <div class = "row well">
+            <div class = "span11">    
+                <h2>{{ book.title }}</h2>
+                    <p>Author:{{ book.author }}</p>
+                    <p>ISBN:<b>{{ book.isbn }}</b></p>
+                    
+                    {% if book.ReqOrOpt == 'Required' %}
+                        <p style="color:red"><b>{{ book.ReqOrOpt }}</b></p>
+                    {% else %}
+                        <p><b>{{ book.ReqOrOpt }}</b></p>
+                    {% endif %}
+                    
+            {% if book.posting %}
+                <ul class="breadcrumb">
+                {% for post in book.posting %}
+                    <li>
+                        <p>Price: ${{ post.price }}<span class="divider"></span>Condition: {{ post.condition }}<span class="divider"></span><button class="btn">Buy</button></p>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    
     <hr>
     <footer>
       <p>&copy; Company 2012</p>

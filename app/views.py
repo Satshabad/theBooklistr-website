@@ -29,20 +29,32 @@ def sell(request):
 
 @csrf_protect
 def buy(request):
-    if request.method == 'GET':
-        pass    
-        ### DO SEARCH STUFF ####
+    if 'q' in request.GET and request.GET['q']:
+            
+        ### TODO Do search stuff
+        ### Search query exists in request.GET['q'] ###
+
+        # Test Data
+        books = [{'title':'Call of the Wild', 'author':'Jack London', 
+                    'ReqOrOpt':'Required','isbn': '123-456-7890'}]
+        posting = [{'condition':'Great', 'price':'10.00'}]
+        books[0]['posting'] = posting
+        
+                    
+        c = RequestContext(request, {'books':books})
+               
 
     elif request.method == 'POST':
         pass
         ### DO BUY STUFF ###
 
     else:
-        pass
+        c = RequestContext(request)
+        return render_to_response('buy.html')
         ### User starts a search ###
 
     ### TODO Implement form for search and buy ###
-    return render_to_response('buy.html')
+    return render_to_response('buy.html', c)
 
 def contact(request):
     c = RequestContext(request)
