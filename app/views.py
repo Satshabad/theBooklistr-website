@@ -15,11 +15,11 @@ def sell(request):
             
             isbn = form.cleaned_data['isbn']
             email = form.cleaned_data['email']
-            price = form.form.cleaned_data['price']
+            price = form.cleaned_data['price']
             condition = form.cleaned_data['condition']
             
           # Redirect to a confirmation of Book posting page 
-            return HttpResponseRedirect('/thanks.html')
+            return HttpResponseRedirect('/thanks')
         else:
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
     form = SellBookForm()
@@ -46,6 +46,10 @@ def buy(request):
 def contact(request):
     c = RequestContext(request)
     return render_to_response("contact.html", c)
+
+def thanks(request):
+    c = RequestContext(request)
+    return render_to_response("thanks.html", c)
 
 @csrf_protect
 def about(request):
