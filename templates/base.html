@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>Bootstrap, from Twitter</title>
+		<title>{% block title %}{% endblock %}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
@@ -34,59 +34,38 @@
 					<a class="brand" href="#">Project name</a>
 					<div class="nav-collapse">
 						<ul class="nav">
-							<li class="active">
-								<a href="/">Home</a>
-							</li>
-							<li>
-								<a href="/sell">Sell A Book</a>
-							</li>
 							<li>
 								<a href="/search">Search for a Book</a>
 							</li>
-							<li>
-								<a href="/about">About</a>
-							</li>
-							<li>
-								<a href="/contact">Contact</a>
+							<li class="active">
+								<a href="/sell">Sell A Book</a>
 							</li>
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>
 			</div>
 		</div>
-		<div class="container">
-			<div class="hero-unit">
-				<div class="row">
-					<div class="span12">
-						<h1>Thanks for your listing</h1>
-						<p>
-							It should be posted in a just a few minutes
-						</p>
-					</div>
-					<hr>
-				</div>
-			</div>
-			<!-- /container -->
-			<footer>
-				<p>
-					&copy; Company 2012
-				</p>
-			</footer>
-			<!-- Le javascript
-			================================================== -->
-			<!-- Placed at the end of the document so the pages load faster -->
-			<script src="../static/js/jquery.js"></script>
-			<script src="../static/js/bootstrap-transition.js"></script>
-			<script src="../static/js/bootstrap-alert.js"></script>
-			<script src="../static/js/bootstrap-modal.js"></script>
-			<script src="../static/js/bootstrap-dropdown.js"></script>
-			<script src="../static/js/bootstrap-scrollspy.js"></script>
-			<script src="../static/js/bootstrap-tab.js"></script>
-			<script src="../static/js/bootstrap-tooltip.js"></script>
-			<script src="../static/js/bootstrap-popover.js"></script>
-			<script src="../static/js/bootstrap-button.js"></script>
-			<script src="../static/js/bootstrap-collapse.js"></script>
-			<script src="../static/js/bootstrap-carousel.js"></script>
-			<script src="../static/js/bootstrap-typeahead.js"></script>
+		{% block content %}{% endblock %}
+		<footer>
+			<p>
+				&copy; Company 2012
+			</p>
+		</footer>
+		<!-- Le javascript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="../static/js/jquery.js"></script>
+		<script src="../static/js/bootstrap-transition.js"></script>
+		<script src="../static/js/bootstrap-alert.js"></script>
+		<script src="../static/js/bootstrap-modal.js"></script>
+		<script src="../static/js/bootstrap-dropdown.js"></script>
+		<script src="../static/js/bootstrap-scrollspy.js"></script>
+		<script src="../static/js/bootstrap-tab.js"></script>
+		<script src="../static/js/bootstrap-tooltip.js"></script>
+		<script src="../static/js/bootstrap-popover.js"></script>
+		<script src="../static/js/bootstrap-button.js"></script>
+		<script src="../static/js/bootstrap-collapse.js"></script>
+		<script src="../static/js/bootstrap-carousel.js"></script>
+		<script src="../static/js/bootstrap-typeahead.js"></script>
 	</body>
 </html>

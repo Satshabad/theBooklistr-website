@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
 
+
 # include this decorator on all post request view functions
 @csrf_protect
 def sell(request):
@@ -22,7 +23,9 @@ def sell(request):
             listing=ListedBook(private_id='1', isbn=form_isbn, email=form_email, price=form_price, condition=form_condition)
             listing.save()
             
-          # Redirect to a confirmation of Book posting page 
+            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
+            #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
         else:
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
@@ -30,24 +33,41 @@ def sell(request):
 
     return render_to_response('sell.html', RequestContext(request,  {'form':form}))
 
-def contact(request):
-    c = RequestContext(request)
-    return render_to_response("contact.html", c)
-
 def thanks(request):
-    c = RequestContext(request)
-    return render_to_response("thanks.html", c)
+    pagename = 'Thank you'
+    title = 'Thanks for your listing'
+    message = 'It should be posted in a just a few minutes. An email has been sent to you.'
+    c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message} )
+    return render_to_response("titleandmessage.html", c)
+    
+def messageSent(request):
+    pagename = 'Message Sent'
+    title = 'Your message has been sent'
+    message = 'The seller now has your email address and may contact you'
+    c = RequestContext(request, { 'pagename':pagename, 'title':title,  'message':message} )
+    return render_to_response("titleandmessage.html", c)
 
-@csrf_protect
-def about(request):
-    c = RequestContext(request)
-    return render_to_response("about.html", c)
-
-def index(request):
-    #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
-    form = ContactSellerForm()
-    c = RequestContext(request, {'form':form})
-    return render_to_response("hero.html", c)
+def delete(request):
+    if request.method == 'GET':
+        pagename = 'Delete Post'
+        title = 'Uh Oh'
+        message = 'Sorry that did not compute'
+        if 'secret' in request.GET and 'email' in request.GET:
+            
+            # DO DATA VALIDATION HERE
+            if True:
+                
+                # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
+                 
+                 title = 'Post deleted'
+                 message = 'Thank you, please come back soon'
+                
+                
+        c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
+        return render_to_response("titleandmessage.html", c)
+            
+        
+        
 
 @csrf_protect
 def search(request):
@@ -106,9 +126,8 @@ def contactseller(request):
             email = form.cleaned_data['email']
             
            ### TODO Contact Seller Stuff
-        
-        # Implement a success page
-        #return HttpResponseRedirect('/thanks')
+           #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
             

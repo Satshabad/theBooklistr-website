@@ -1,12 +1,9 @@
-{% load bootstrap %}
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<meta charset="utf-8">
-		<title>Bootstrap, from Twitter</title>
+		<title>Buy</title>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
 		<!-- Le styles -->
 		<link href="../static/css/bootstrap.css" rel="stylesheet">
 		<style type="text/css">
@@ -14,6 +11,35 @@
 				padding-top: 60px;
 				padding-bottom: 40px;
 			}
+			#search #search-area #search-box button {
+				height: 58px;
+				width: 58px;
+			}
+			#search #search-area #search-box input {
+				height: 48px;
+				line-height: 1.5;
+				font-size: 36px;
+			}
+			.visuallyhidden {
+				height: 1px;
+				width: 1px;
+				margin: -1px;
+				padding: 0;
+				border: 0;
+				clip: rect(0 0 0 0);
+				position: absolute;
+				overflow: hidden;
+			}
+			#search #main-title {
+				margin-top: 30px;
+			}
+			#search #main-title h1 {
+				font-weight: 300;
+				font-size: 65px;
+				height: 100px;
+				line-height: 1;
+			}
+
 		</style>
 		<link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
 		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -27,7 +53,7 @@
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../static/ico/apple-touch-icon-72-precomposed.png">
 		<link rel="apple-touch-icon-precomposed" href="../static/ico/apple-touch-icon-57-precomposed.png">
 	</head>
-	<body>
+	<body id="search">
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
@@ -36,62 +62,45 @@
 					<div class="nav-collapse">
 						<ul class="nav">
 							<li class="active">
-								<a href="/">Home</a>
+								<a href="/search">Search for a Book</a>
 							</li>
 							<li>
 								<a href="/sell">Sell A Book</a>
 							</li>
-							<li>
-								<a href="/search">Search for a Book</a>
 							</li>
-
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>
 			</div>
 		</div>
+		<!--/End navbar section -->
 		<div class="container">
-			<!-- Main hero unit for a primary marketing message or call to action -->
-			<div class="hero-unit">
-				<div id="myModal" class="modal hide fade">
-					<div class="modal-header">
-						<button class="close" data-dismiss="modal">
-							&times;
-						</button>
-						<h3>Contact Seller</h3>
+			<div class="row">
+				<div id="main-title" class="span8">
+					<h1>Search for books by class</h1>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="span12">
+					<div id="search-area">
+						<form class="form-search" method="GET" action="/search">
+							<div class="control-group">
+								<div class="controls">
+									<div id="search-box" class="input-append">
+										<input id="id_q" name="q" type="text" placeholder="i.e. CS241" class="span11 input-large">
+										<button class="btn btn-primary" type="submit">
+											<i class="icon-search"></i><span class="visuallyhidden">Search</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
 					</div>
-					<form method="POST" action="/sell">
-						<div class="modal-body">
-							{{ form}}
-					</form>
-				</div>
-				<div class="modal-footer">
-					<a href="#" class="btn" data-dismiss="modal" >Cancel</a>
-					<a href="#" class="btn btn-primary">Send</a>
 				</div>
 			</div>
-			<a data-toggle="modal" href="#myModal" class="btn btn-primary btn-large">Launch demo modal</a>
-		</div>
-		<!-- Example row of columns -->
-		<div class="row">
-			<div class="span6">
-				<h2>Finding a book</h2>
-				<p>
-					Just head over to the search page and find your classes
-				</p>
-				<p>
-					<a class="btn" href="#">Buy &raquo;</a>
-				</p>
-			</div>
-			<div class="span6">
-				<h2>Heading</h2>
-				<p>
-					Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-				</p>
-				<p>
-					<a class="btn" href="#">Sell &raquo;</a>
-				</p>
-			</div>
+			<hr>
+			{% block content %}{% endblock %}
 			<hr>
 			<footer>
 				<p>
