@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>Sell a Book</title>
+		<title>Contact the Seller</title>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Le styles -->
@@ -34,7 +34,7 @@
 					<div class="nav-collapse">
 						<ul class="nav">
 							<li><a href="/">Home</a></li>
-							<li class="active"><a href="/sell">Sell A Book</a></li>
+							<li><a href="/sell">Sell A Book</a></li>
                             <li><a href="/search">Search for a Book</a></li>
 							<li><a href="/about">About</a></li>
 							<li><a href="/contact">Contact</a></li>
@@ -46,16 +46,10 @@
 		<div class="container">
 			<div class="hero-unit">
 				<div class="row">
-					<div class="span7">
-						<h1>How this works</h1>
-						<p>
-							You give us a little information about the book and your email address. We will list it on this site and keep your email private.
-							If anyone wants to buy your book, we'll email you with their contact information. We never reveal your email address to anyone.
-						<p>
-					</div>
-					<form method="POST" action="/sell">
+					
+					<form method="POST" action="/contactseller">
 						{% csrf_token %}
-						<div class="span3">
+						<div class="span4">
 							{% if form.errors %}
 							<p style="color: red;">
 								Please correct the error{{ form.errors|pluralize }} below.
@@ -63,9 +57,17 @@
 							{% endif %}
 
 							{{ form|bootstrap }}
+							<input type="hidden" value="{{ postid }}" name="postid" >
 							<input class="btn btn-primary btn-large" type="submit" value="List your book &raquo;">
 						</div>
 					</form>
+					<div class="span6">
+						<h1>How this works</h1>
+						<p>
+							We'll contact the seller for you and give them youre email address. Feel free to write a message to them and we'll pass it along. 
+							We won't store your email, or share it with anyone other than the seller you are contacting.
+						<p>
+					</div>
 				</div>
 			</div>
 			<footer>

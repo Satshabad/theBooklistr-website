@@ -28,55 +28,6 @@ def sell(request):
 
     return render_to_response('sell.html', RequestContext(request,  {'form':form}))
 
-@csrf_protect
-def buy(request):
-    
-    #### TODO!!!!!! VALIDATE q AND s
-    if 'q' in request.GET and request.GET['q']:
-        
-        # user has not selected a section
-        if  not 's' in request.GET:
-            sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
-            c = RequestContext(request, {'sections':sections,  'courseid':request.GET['q']})
-            return render_to_response('search-selection.html', c)
-        ### TODO Do search stuff
-        ### QUERY DATABASE USING SECTION ID request.GET['s']and course_id request.GET['q']
-
-        # Test Data
-        books = [{'title':'Call of the Wild', 'author':'Jack London', 
-                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
-                    'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
-        posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
-        books[0]['listings'] = posting
-        books[1]['listings'] = posting
-        
-        
-        form = ContactSellerForm()    
-        c = RequestContext(request, {'books':books, 'form':form})
-               
-
-    elif request.method == 'POST':
-        
-        ### TODO Contact Seller Stuff
-        ### find the id of the seller with request.POST['id']
-        
-        
-        # Test render_to_response to see if we can get the id of the seller
-        return render_to_response('buy.html', {'post_id':request.POST['id']})
-        
-        # Implement a success page
-        #return HttpResponseRedirect('/thanks')
-
-    else:
-  
-        
-        c = RequestContext(request)
-        return render_to_response('buy.html', c)
-        ### User starts a search ###
-
-    ### TODO Implement form for buy ###
-    return render_to_response('buy.html', c)
-
 def contact(request):
     c = RequestContext(request)
     return render_to_response("contact.html", c)
@@ -95,3 +46,85 @@ def index(request):
     form = ContactSellerForm()
     c = RequestContext(request, {'form':form})
     return render_to_response("hero.html", c)
+
+@csrf_protect
+def search(request):
+
+    if request.method == "GET":
+        # The user has submitted a get request
+        
+        if  's' in request.GET and 'q' in request.GET:
+            # The user has selected a course and a section. Send the book listings
+            
+             # TEST DATA. USE QUERIES INSTEAD HERE
+             books = [{'title':'Call of the Wild', 'author':'Jack London', 
+                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
+                    'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
+             posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
+             books[0]['listings'] = posting
+             books[1]['listings'] = posting
+            # end test data
+        
+             # return the search results and a form for them to contact the seller
+             form = ContactSellerForm()    
+             c = RequestContext(request, {'books':books, 'form':form})
+             return render_to_response('search.html', c)
+            
+            
+        elif  'q' in request.GET and request.GET['q']:
+            # The user has only selected a course. Send the section listings. Unless q is empty.
+            
+            # TEST DATA. USE QUERIES INSTEAD HERE
+            sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
+            # end test data
+            
+            # pass the section to the user and the course they selected so it can passed back to us later
+            c = RequestContext(request, {'sections':sections,  'coursename':request.GET['q']})
+            return render_to_response('search-selection.html', c)
+            
+            
+        else:
+            # The user has not submitted any relevent data, or no data. Render a default search page.
+            return render_to_response('search.html')
+        
+def contactseller(request):
+    
+    if request.method == "POST":
+        # The user has submitted a post request
+        
+        if  not 'postid' in request.POST:
+            # if they did not submit a postid, which is automatic, then just redirect them to the home page.
+            return HttpResponseRedirect('/search')
+            
+        form = ContactSellerForm(request.POST)
+        if form.is_valid():
+            
+            
+            message = form.cleaned_data['message']
+            email = form.cleaned_data['email']
+            
+           ### TODO Contact Seller Stuff
+        
+        # Implement a success page
+        #return HttpResponseRedirect('/thanks')
+        else:
+            return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
+            
+    if request.method == "GET":
+        if  not 'postid' in request.GET:
+            # if they did not submit a postid, which is automatic, then just redirect them to the home page.
+            return HttpResponseRedirect('/search')
+            
+        form = ContactSellerForm() 
+        c = RequestContext(request,  {'form':form,  'postid':request.GET['postid']})
+        return render_to_response("contactseller.html", c)
+        
+    
+    
+   
+       
+        
+        
+        
+        
+        
