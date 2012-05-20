@@ -7,6 +7,9 @@ class Course(models.Model):
 	sectionID = models.CharField(max_length=30, primary_key=True)
 	sectionName = models.CharField(max_length=20) # part of PK
 	instructor = models.CharField(max_length=50)
+
+	#def __unicode__(self):
+	#	return u'%s %s %s %s %s' % (self.name, self.courseID, self.sectionID, self.sectionName, self.instructor)
 	
 #class Section(models.Model):
 #	courseName = models.CharField(max_length=30) # part of PK
