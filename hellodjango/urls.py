@@ -18,10 +18,11 @@ urlpatterns = patterns('',
     
     url(r'^$', 'app.views.index'),
     url(r'^sell$', 'app.views.sell', name='sell'),
-    url(r'^search$', 'app.views.buy', name='buy'),
+    url(r'^search$', 'app.views.search', name='search'),
     url(r'^about$', 'app.views.about', name='about'),
     url(r'^contact$', 'app.views.contact', name='contact'),
-    url(r'^thanks$', 'app.views.thanks', name='thanks')
+    url(r'^thanks$', 'app.views.thanks', name='thanks'), 
+    url(r'^contactseller$', 'app.views.contactseller', name='contactseller')
 )
 urlpatterns += patterns('',  
 (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': hellodjango.settings.STATIC_ROOT}),  
