@@ -5,6 +5,7 @@ from forms import ContactSellerForm
 from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
+from models import ListedBook
 
 
 # include this decorator on all post request view functions
@@ -15,11 +16,12 @@ def sell(request):
         if form.is_valid():
             
             # FOR RYAN, INSERT THESE INTO THE DB
-            
-            isbn = form.cleaned_data['isbn']
-            email = form.cleaned_data['email']
-            price = form.cleaned_data['price']
-            condition = form.cleaned_data['condition']
+            form_isbn = form.cleaned_data['isbn']
+            form_email = form.cleaned_data['email']
+            form_price = form.cleaned_data['price']
+            form_condition = form.cleaned_data['condition']
+            listing=ListedBook(private_id='1', isbn=form_isbn, email=form_email, price=form_price, condition=form_condition)
+            listing.save()
             
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
             message = '''Hey there book seller,
