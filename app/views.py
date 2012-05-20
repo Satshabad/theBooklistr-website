@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
+from models import Course
 
 # for amazon calls
 from amazonify import amazonify
@@ -28,15 +29,15 @@ def sell(request):
             form_condition = form.cleaned_data['condition']
 
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL 
-			# in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. 
-			# 	Clicking this link will delete their post
+            # in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. 
+            #   Clicking this link will delete their post
             #send_mail('Subject here', 'Here is the message.', 'from@example.com', 
-			#	['satshabad.music@gmail.com'], fail_silently=False)
+            #   ['satshabad.music@gmail.com'], fail_silently=False)
             secret_key = '1';
 
             listing = ListedBook(private_id = secret_key, isbn = form_isbn, email = form_email, price = form_price, condition = form_condition)
 
-			# insert the new listing into the database
+            # insert the new listing into the database
             listing.save()
             
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
@@ -99,11 +100,18 @@ def delete(request):
 @csrf_protect
 def search(request):
 
+    # The user has submitted a get request
     if request.method == "GET":
-        # The user has submitted a get request
-        
+
+		#############
+        # The user has selected a course and a section. 
+		# - Provide the books that are listed for that course and section.
+		#############
         if  's' in request.GET and 'q' in request.GET:
-        # The user has selected a course and a section. Send the book listings
+            courses = Course.objects.filter(name = request.GET['q'])
+
+            #  retrieve the list of books that correspond to a Course and Section
+            correctBooks = Course.objects.filter(name = request.GET['q'], sectionID = request.GET['s'])
            
             # TEST DATA. USE QUERIES INSTEAD HERE
             books = [{'title':'Call of the Wild', 'author':'Jack London', 
@@ -112,6 +120,7 @@ def search(request):
             posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
             books[0]['listings'] = posting
             books[1]['listings'] = posting
+
              
             # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
             amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
@@ -139,28 +148,28 @@ def search(request):
                     book['amazon']['newprice'] = newprice
             # end test data
 
-			
+            
         
             # return the search results and a form for them to contact the seller
             form = ContactSellerForm()    
             c = RequestContext(request, {'books':books, 'form':form})
             return render_to_response('search.html', c)
-            
-            
 
-		# The user has only selected a course.
-		# 	List all the selections unless q is empty
+        # The user has only entered a courseName (i.e. CS240)
+        #   -- list the sections of that course
         elif  'q' in request.GET and request.GET['q']:
-			
-            
+
+            # query the database for the courses with the name requested in q
+            courses = Course.objects.filter(name = request.GET['q'])
+
             # TEST DATA. USE QUERIES INSTEAD HERE
-            sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
+            #sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
             # end test data
             
             # pass the section to the user and the course they selected so it can passed back to us later
-            c = RequestContext(request, {'sections':sections,  'coursename':request.GET['q']})
+            #c = RequestContext(request, {'sections':sections,  'coursename':request.GET['q']})
+            c = RequestContext(request, {'courses' : courses})
             return render_to_response('search-selection.html', c)
-            
             
         else:
             # The user has not submitted any relevent data, or no data. Render a default search page.
@@ -196,13 +205,3 @@ def contactseller(request):
         form = ContactSellerForm() 
         c = RequestContext(request,  {'form':form,  'postid':request.GET['postid']})
         return render_to_response("contactseller.html", c)
-        
-    
-    
-   
-       
-        
-        
-        
-        
-        
