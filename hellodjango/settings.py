@@ -14,13 +14,12 @@ SERVER_DIR = os.path.abspath(".")
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
 		'ENGINE' : 'django.db.backends.mysql',
-        'NAME' : 'hackathon', # Or path to database file if using sqlite3.
-        'USER' : 'root', # Not used with sqlite3.
-        'PASSWORD' : 'root', # Not used with sqlite3.
-        'HOST' : 'localhost', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT' : '3306', # Set to empty string for default. Not used with sqlite3.
+        'NAME' : 'hackathon', 	# Or path to database file if using sqlite3.
+        'USER' : 'root', 		# Not used with sqlite3.
+        'PASSWORD' : 'root', 	# Not used with sqlite3.
+        'HOST' : 'localhost',	# Set to empty string for localhost. Not used with sqlite3.
+        'PORT' : '3306',		# Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -126,7 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'app',
     'gunicorn',
-    'bootstrapform'
+    'bootstrapform',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
