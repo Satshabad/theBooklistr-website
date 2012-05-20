@@ -126,12 +126,18 @@
                     {% endif %}
                     
             {% if book.listings %}
-                
+
+                    	<div class="container">
+                    		<div class='row'>
+                    			<div class="span4"> <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3> </div><div class="span4"> <h3>Condition</h3></div>
+                    		</div>
+                        </div>
+
                 {% for post in book.listings %}
                 <ul class="breadcrumb">
                     	<div class="container">
                     		<div class='row'>
-                    			<div class="span4"> Price: ${{ post.price }} </div><div class="span4"> Condition: {{ post.condition }}</div><div class="span4"> <button class="btn btn-primary btn-large">Buy</button></div>
+                    			<div class="span4"> <h3>${{ post.price }}</h3> </div><div class="span4"> Condition: <h3>{{ post.condition }}</h3></div><div class="span4"> <button class="btn btn-primary btn-large">Contact Seller</button></div>
                     		</div>
                         </div>
                         </ul>
