@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     
     url(r'^$', 'app.views.index'),
     url(r'^sell$', 'app.views.sell', name='sell'),
-    url(r'^buy$', 'app.views.buy', name='buy'),
+    url(r'^search$', 'app.views.buy', name='buy'),
     url(r'^about$', 'app.views.about', name='about'),
     url(r'^contact$', 'app.views.contact', name='contact'),
     url(r'^thanks$', 'app.views.thanks', name='thanks')
