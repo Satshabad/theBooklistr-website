@@ -37,9 +37,11 @@ def buy(request):
 
         # Test Data
         books = [{'title':'Call of the Wild', 'author':'Jack London', 
-                    'ReqOrOpt':'Required','isbn': '123-456-7890'}]
-        posting = [{'condition':'Great', 'price':'10.00'}]
-        books[0]['posting'] = posting
+                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
+                    'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
+        posting = [{'condition':'Great', 'price':'10.00'},  {'condition':'OK', 'price':'13.00'},  {'condition':'Bad', 'price':'100.00'},  {'condition':'Sweet', 'price':'12.00'},  {'condition':'Meh', 'price':'11.00'}]
+        books[0]['listings'] = posting
+        books[1]['listings'] = posting
         
                     
         c = RequestContext(request, {'books':books})

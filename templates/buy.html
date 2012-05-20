@@ -97,7 +97,7 @@
             <div class="span12">
                 <div id="search-area">
                     <form class="form-search" method="GET" action="/buy">
-                        <input type="hidden" name="has_releases" value="on">
+                        
                         <div class="control-group">
                             <div class="controls">
                                 <div id="search-box" class="input-append">
@@ -125,11 +125,16 @@
                         <p><b>{{ book.ReqOrOpt }}</b></p>
                     {% endif %}
                     
-            {% if book.posting %}
+            {% if book.listings %}
+                
+                {% for post in book.listings %}
                 <ul class="breadcrumb">
-                {% for post in book.posting %}
-                    <li>
-                        <p>Price: ${{ post.price }}<span class="divider"></span>Condition: {{ post.condition }}<span class="divider"></span><button class="btn">Buy</button></p>
+                    	<div class="container">
+                    		<div class='row'>
+                    			<div class="span4"> Price: ${{ post.price }} </div><div class="span4"> Condition: {{ post.condition }}</div><div class="span4"> <button class="btn btn-primary btn-large">Buy</button></div>
+                    		</div>
+                        </div>
+                        </ul>
                 {% endfor %}
             {% endif %}
             </div>
