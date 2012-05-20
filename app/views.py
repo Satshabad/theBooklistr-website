@@ -7,24 +7,29 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
 
-
 # include this decorator on all post request view functions
 @csrf_protect
 def sell(request):
     if request.method == 'POST':
         form = SellBookForm(request.POST)
         if form.is_valid():
-            
-            # FOR RYAN, INSERT THESE INTO THE DB
             form_isbn = form.cleaned_data['isbn']
             form_email = form.cleaned_data['email']
             form_price = form.cleaned_data['price']
             form_condition = form.cleaned_data['condition']
-            listing=ListedBook(private_id='1', isbn=form_isbn, email=form_email, price=form_price, condition=form_condition)
+
+            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL 
+			# in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. 
+			# 	Clicking this link will delete their post
+            #send_mail('Subject here', 'Here is the message.', 'from@example.com', 
+			#	['satshabad.music@gmail.com'], fail_silently=False)
+            secret_key = '1';
+
+            listing = ListedBook(private_id = secret_key, isbn = form_isbn, email = form_email, price = form_price, condition = form_condition)
+
+			# insert the new listing into the database
             listing.save()
             
-            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
-            #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
         else:
@@ -78,23 +83,28 @@ def search(request):
         if  's' in request.GET and 'q' in request.GET:
             # The user has selected a course and a section. Send the book listings
             
-             # TEST DATA. USE QUERIES INSTEAD HERE
-             books = [{'title':'Call of the Wild', 'author':'Jack London', 
+            # TEST DATA. USE QUERIES INSTEAD HERE
+            books = [{'title':'Call of the Wild', 'author':'Jack London', 
                     'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
                     'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
-             posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
-             books[0]['listings'] = posting
-             books[1]['listings'] = posting
+            posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
+            books[0]['listings'] = posting
+            books[1]['listings'] = posting
             # end test data
+
+			
         
-             # return the search results and a form for them to contact the seller
-             form = ContactSellerForm()    
-             c = RequestContext(request, {'books':books, 'form':form})
-             return render_to_response('search.html', c)
+            # return the search results and a form for them to contact the seller
+            form = ContactSellerForm()    
+            c = RequestContext(request, {'books':books, 'form':form})
+            return render_to_response('search.html', c)
             
             
+
+		# The user has only selected a course.
+		# 	List all the selections unless q is empty
         elif  'q' in request.GET and request.GET['q']:
-            # The user has only selected a course. Send the section listings. Unless q is empty.
+			
             
             # TEST DATA. USE QUERIES INSTEAD HERE
             sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]

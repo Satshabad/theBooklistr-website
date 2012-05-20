@@ -2,9 +2,18 @@ from django.db import models
 
 # Create your models here# Create your models here.
 class Course(models.Model):
+	name = models.CharField(max_length=30) # ex. CS 241.
 	courseID = models.IntegerField()
-	name = models.CharField(max_length=30, primary_key=True) # ex. CS 241.
-
+	sectionID = models.CharField(max_length=30, primary_key=True)
+	sectionName = models.CharField(max_length=20) # part of PK
+	instructor = models.CharField(max_length=50)
+	
+#class Section(models.Model):
+#	courseName = models.CharField(max_length=30) # part of PK
+#	sectionName = models.CharField(max_length=20) # part of PK
+#	instructor = models.CharField(max_length=50)
+#	sectionID = models.CharField(max_length=30, primary_key=True)		# does this have use?
+	
 class Book(models.Model):
 	isbn = models.CharField(max_length=30, primary_key=True)
 	author = models.CharField(max_length=100)

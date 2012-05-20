@@ -19,5 +19,13 @@ class Command(NoArgsCommand):
 			for courses in dept['courses']:
 				newCourseName = courses['name']
 				newCourseID = courses['id']
-				newCourse = Course(courseID=newCourseID, name=newCourseName)
-				newCourse.save()
+				for section in courses['sections']:
+					newSectionID = section['id']
+					newSectionName = section['name']
+					newInstructor = section['instructor']
+					newCourse = Course(name = newCourseName, 
+						courseID = newCourseID, 
+						sectionID = newSectionID, 
+						sectionName = newSectionName, 
+						instructor = newInstructor)
+					newCourse.save()
