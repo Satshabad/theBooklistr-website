@@ -57,10 +57,26 @@
 		<div class="container">
 			<div class="hero-unit">
 				<div class="row">
-					<div class="span12">
-						<h1>Thanks for your listing</h1>
+					<div class="span5">
+						<h1>Thank you</h1>
 						<p>
 							It should be posted in a just a few minutes
+						</p>
+						<p>
+							Save your secret code and post number so you can delete your post later
+						</p>
+					</div>
+					<div class="span5">
+						<h2>Important secret code</h2>
+						<p>
+						</p>
+						<h3><a href="#"  id="secret" rel="popover" data-content="Save this code so you can delete your post later" data-original-title="What's this?">{{ secretkey }}</a></h2>
+						<h2>Post number</h2>
+						<p>
+						</p>
+						<h3><a href="#"  id="postnum" rel="popover" data-content="This is how you can identify your post on this site" data-original-title="What's this?">{{ postnumber }}</a></h2>
+
+						<p>
 						</p>
 					</div>
 					<hr>
@@ -88,5 +104,12 @@
 			<script src="../static/js/bootstrap-collapse.js"></script>
 			<script src="../static/js/bootstrap-carousel.js"></script>
 			<script src="../static/js/bootstrap-typeahead.js"></script>
+			<script>
+				$(function() {
+					$("#secret").popover();
+					$("#postnum").popover();
+				});
+
+			</script>
 	</body>
 </html>

@@ -20,8 +20,9 @@ def sell(request):
             price = form.cleaned_data['price']
             condition = form.cleaned_data['condition']
             
-          # Redirect to a confirmation of Book posting page 
-            return HttpResponseRedirect('/thanks')
+            # NOW GENERATE SECRET KEY and PUBLIC KEY
+            # Redirect to a confirmation of Book posting page 
+            return HttpResponseRedirect('/thanks?key=123&postnumber=456')
         else:
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
     form = SellBookForm()
@@ -33,7 +34,7 @@ def contact(request):
     return render_to_response("contact.html", c)
 
 def thanks(request):
-    c = RequestContext(request)
+    c = RequestContext(request,  {'secretkey':request.GET['key'], 'postnumber':request.GET['postnum'] })
     return render_to_response("thanks.html", c)
 
 @csrf_protect
@@ -42,7 +43,6 @@ def about(request):
     return render_to_response("about.html", c)
 
 def index(request):
-    #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
     form = ContactSellerForm()
     c = RequestContext(request, {'form':form})
     return render_to_response("hero.html", c)
@@ -104,6 +104,7 @@ def contactseller(request):
             email = form.cleaned_data['email']
             
            ### TODO Contact Seller Stuff
+           #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
         
         # Implement a success page
         #return HttpResponseRedirect('/thanks')
