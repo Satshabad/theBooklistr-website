@@ -30,10 +30,17 @@ def sell(request):
 
 @csrf_protect
 def buy(request):
+    
+    #### TODO!!!!!! VALIDATE q AND s
     if 'q' in request.GET and request.GET['q']:
-            
+        
+        # user has not selected a section
+        if  not 's' in request.GET:
+            sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
+            c = RequestContext(request, {'sections':sections,  'courseid':request.GET['q']})
+            return render_to_response('search-selection.html', c)
         ### TODO Do search stuff
-        ### Search query exists in request.GET['q'] ###
+        ### QUERY DATABASE USING SECTION ID request.GET['s']and course_id request.GET['q']
 
         # Test Data
         books = [{'title':'Call of the Wild', 'author':'Jack London', 
