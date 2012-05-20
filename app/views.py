@@ -7,6 +7,14 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
 
+# for amazon calls
+from amazonify import amazonify
+import BeautifulSoup
+import bottlenose
+
+AMAZON_API_KEY = 'AKIAI75ZQQCZ726SSJDA'
+AMAZON_SECRET_KEY = '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'
+AMAZON_ASSOC_TAG = 'books0ae3-20'
 
 # include this decorator on all post request view functions
 @csrf_protect
@@ -90,11 +98,38 @@ def search(request):
             
              # TEST DATA. USE QUERIES INSTEAD HERE
              books = [{'title':'Call of the Wild', 'author':'Jack London', 
-                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
+                    'ReqOrOpt':'Required','isbn': '0-13110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
                     'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
              posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
              books[0]['listings'] = posting
              books[1]['listings'] = posting
+             
+             # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
+             amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
+
+             for book in books:
+                 # Do this for each book. 
+                 book['amazon'] = {}
+                 response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''), ResponseGroup="ItemAttributes, Offers ",SearchIndex="Books", IdType="ISBN")
+                 soup = BeautifulSoup.BeautifulSoup(response)
+                 print book['isbn'].strip('-')
+                 
+                 # check to see that response exists
+                 if not soup.find('items').findAll('item'):
+                     continue
+                     
+                 for item in soup.find('items').findAll('item'):
+                     
+                     if not(item.find('detailpageurl') and item.find('lowestusedprice') and item.find('lowestnewprice')):
+                         continue
+                     link = item.find('detailpageurl').text
+                     reflink = amazonify(link,  AMAZON_ASSOC_TAG)
+                     book['amazon']['link'] = reflink
+                     usedprice = item.find('lowestusedprice').find('formattedprice').text
+                     book['amazon']['usedprice'] = usedprice
+                     newprice = item.find('lowestnewprice').find('formattedprice').text
+                     book['amazon']['newprice'] = newprice
+             
             # end test data
         
              # return the search results and a form for them to contact the seller

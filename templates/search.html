@@ -35,18 +35,56 @@
 				<b>{{ book.ReqOrOpt }}</b>
 			</p>
 			{% endif %}
-
-			{% if book.listings %}
 			<div class="container">
 				<div class='row'>
-					<div class="span4">
+					<div class="span3">
 						<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3>
 					</div>
-					<div class="span4">
+					<div class="span3">
 						<h3>Condition</h3>
 					</div>
 				</div>
 			</div>
+			{% if book.amazon %}
+			<ul class="breadcrumb">
+				<div class="container">
+					<div class='row'>
+						<div class="span3">
+							<h3>{{book.amazon.usedprice}}</h3>
+						</div>
+						<div class="span3">
+							<h3>Used</h3>
+						</div>
+						<div class="span3">
+							<a class="btn btn-primary btn-large" href="{{book.amazon.link}}"> Contact Seller</a>
+						</div>
+						<div class="span2">
+							<h3>On Amazon</h3>
+						</div>
+					</div>
+				</div>
+			</ul>
+			<ul class="breadcrumb">
+				<div class="container">
+					<div class='row'>
+						<div class="span3">
+							<h3>{{book.amazon.newprice}}</h3>
+						</div>
+						<div class="span3">
+							<h3>New</h3>
+						</div>
+						<div class="span3">
+							<a class="btn btn-primary btn-large" href="{{book.amazon.link}}"> Contact Seller</a>
+						</div>
+						<div class="span2">
+							<h3>On Amazon</h3>
+						</div>
+					</div>
+				</div>
+			</ul>
+			{% endif %}
+			{% if book.listings %}
+
 			{% for post in book.listings %}
 			<ul class="breadcrumb">
 				<div class="container">
