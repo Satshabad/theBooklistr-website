@@ -32,8 +32,16 @@ def sell(request):
     return render_to_response('sell.html', RequestContext(request,  {'form':form}))
 
 def thanks(request):
-    c = RequestContext(request,  {'secretkey':request.GET['key'], 'postnumber':request.GET['postnumber'] })
-    return render_to_response("thanks.html", c)
+    title = 'Thanks for your listing'
+    message = 'It should be posted in a just a few minutes. An email has been sent to you.'
+    c = RequestContext(request, { 'title':title,  'message':message} )
+    return render_to_response("titleandmessage.html", c)
+    
+def messageSent(request):
+    title = 'Your message has been sent'
+    message = 'The seller now has your email address and may contact you'
+    c = RequestContext(request, { 'title':title,  'message':message} )
+    return render_to_response("titleandmessage.html", c)
 
 def index(request):
     form = ContactSellerForm()
@@ -56,7 +64,7 @@ def delete(request):
                 
                 
         c = RequestContext(request, { 'title':title,  'message':message})
-        return render_to_response("delete.html", c)
+        return render_to_response("titleandmessage.html", c)
             
         
         
@@ -119,9 +127,7 @@ def contactseller(request):
             
            ### TODO Contact Seller Stuff
            #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
-        
-        # Implement a success page
-        #return HttpResponseRedirect('/thanks')
+            return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
             

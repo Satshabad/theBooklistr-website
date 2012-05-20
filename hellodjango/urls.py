@@ -23,7 +23,8 @@ urlpatterns = patterns('',
     url(r'^contact$', 'app.views.contact', name='contact'),
     url(r'^thanks$', 'app.views.thanks', name='thanks'), 
     url(r'^contactseller$', 'app.views.contactseller', name='contactseller'),
-url(r'^delete$', 'app.views.delete', name='delete')
+    url(r'^delete$', 'app.views.delete', name='delete'), 
+    url(r'^message$', 'app.views.messageSent', name='messageSent')
 )
 urlpatterns += patterns('',  
 (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': hellodjango.settings.STATIC_ROOT}),  
