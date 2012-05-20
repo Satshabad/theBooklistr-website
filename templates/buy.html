@@ -126,10 +126,8 @@
                     {% endif %}
                     
             {% if book.posting %}
-                <ul class="breadcrumb">
                 {% for post in book.posting %}
-                    <li>
-                        <p>Price: ${{ post.price }}<span class="divider"></span>Condition: {{ post.condition }}<span class="divider"></span><button class="btn">Buy</button></p>
+                        <p class="breadcrumb">Price: ${{ post.price }}<span class="divider"></span>Condition: {{ post.condition }}<span class="divider"></span><button class="btn">Buy</button></p>
                 {% endfor %}
             {% endif %}
             </div>

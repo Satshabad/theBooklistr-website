@@ -35,11 +35,16 @@ def buy(request):
         ### Search query exists in request.GET['q'] ###
 
         # Test Data
-        books = [{'title':'Call of the Wild', 'author':'Jack London', 
-                    'ReqOrOpt':'Required','isbn': '123-456-7890'}]
-        posting = [{'condition':'Great', 'price':'10.00'}]
-        books[0]['posting'] = posting
-        
+        books = [{  'title':'Call of the Wild', 'author':'Jack London', 
+                    'ReqOrOpt':'Required','isbn': '123-456-7890',
+                    'posting':[{'condition':'Great', 'price':'10.00'},
+                    {'condition':'Okay','price':'7.50'}]
+                 },
+                 {  'title':'White Fang', 'author':'Jack London', 
+                    'ReqOrOpt':'Optional','isbn': '123-1234567-123',
+                    'posting':[{'condition':'Okay, some pages have highlights', 'price':'5.00'},
+                                {'condition':'Bad','price':'2.50'}]
+                 }]
                     
         c = RequestContext(request, {'books':books})
                
@@ -53,7 +58,7 @@ def buy(request):
         return render_to_response('buy.html')
         ### User starts a search ###
 
-    ### TODO Implement form for search and buy ###
+    ### TODO Implement form for buy ###
     return render_to_response('buy.html', c)
 
 def contact(request):
