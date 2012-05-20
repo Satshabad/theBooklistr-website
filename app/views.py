@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 
+
 # include this decorator on all post request view functions
 @csrf_protect
 def sell(request):
@@ -20,32 +21,45 @@ def sell(request):
             price = form.cleaned_data['price']
             condition = form.cleaned_data['condition']
             
-            # NOW GENERATE SECRET KEY and PUBLIC KEY
+            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
+            #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
             # Redirect to a confirmation of Book posting page 
-            return HttpResponseRedirect('/thanks?key=123&postnumber=456')
+            return HttpResponseRedirect('/thanks')
         else:
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
     form = SellBookForm()
 
     return render_to_response('sell.html', RequestContext(request,  {'form':form}))
 
-def contact(request):
-    c = RequestContext(request)
-    return render_to_response("contact.html", c)
-
 def thanks(request):
-    c = RequestContext(request,  {'secretkey':request.GET['key'], 'postnumber':request.GET['postnum'] })
+    c = RequestContext(request,  {'secretkey':request.GET['key'], 'postnumber':request.GET['postnumber'] })
     return render_to_response("thanks.html", c)
-
-@csrf_protect
-def about(request):
-    c = RequestContext(request)
-    return render_to_response("about.html", c)
 
 def index(request):
     form = ContactSellerForm()
     c = RequestContext(request, {'form':form})
     return render_to_response("hero.html", c)
+    
+def delete(request):
+    if request.method == 'GET':
+        title = 'Uh Oh'
+        message = 'Sorry that did not compute'
+        if 'secret' in request.GET and 'email' in request.GET:
+            
+            # DO DATA VALIDATION HERE
+            if True:
+                
+                # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
+                 
+                 title = 'Post deleted'
+                 message = 'Thank you, please come back soon'
+                
+                
+        c = RequestContext(request, { 'title':title,  'message':message})
+        return render_to_response("delete.html", c)
+            
+        
+        
 
 @csrf_protect
 def search(request):

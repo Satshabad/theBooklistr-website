@@ -71,12 +71,6 @@
 							<li class="active">
 								<a href="/search">Search for a Book</a>
 							</li>
-							<li>
-								<a href="/about">About</a>
-							</li>
-							<li>
-								<a href="/contact">Contact</a>
-							</li>
 						</ul>
 					</div><!--/.nav-collapse -->
 				</div>
@@ -111,7 +105,6 @@
 			</div>
 			<hr>
 			<p>
-				Just tried to contact {{ post_id }}
 			</p>
 			<!-- begin search results -->
 			{% for book in books %}
@@ -149,18 +142,19 @@
 					<ul class="breadcrumb">
 						<div class="container">
 							<div class='row'>
-								<div class="span4">
+								<div class="span3">
 									<h3>${{ post.price }}</h3>
 								</div>
-								<div class="span4">
+								<div class="span3">
 									<h3>{{ post.condition }}</h3>
 								</div>
 								<form method="GET" action="/contactseller">
-									<div class="span4">
+									<div class="span3">
 										<input class="btn btn-primary btn-large" type="submit" value="Contact Seller">
 									</div>
 									<input type="hidden" value="{{ post.id }}" name="postid"></input>
 								</form>
+								
 							</div>
 						</div>
 					</ul>
