@@ -42,7 +42,6 @@ def buy(request):
         posting = [{'condition':'Great', 'price':'10.00'},  {'condition':'OK', 'price':'13.00'},  {'condition':'Bad', 'price':'100.00'},  {'condition':'Sweet', 'price':'12.00'},  {'condition':'Meh', 'price':'11.00'}]
         books[0]['listings'] = posting
         books[1]['listings'] = posting
-        
                     
         c = RequestContext(request, {'books':books})
                
@@ -56,7 +55,7 @@ def buy(request):
         return render_to_response('buy.html')
         ### User starts a search ###
 
-    ### TODO Implement form for search and buy ###
+    ### TODO Implement form for buy ###
     return render_to_response('buy.html', c)
 
 def contact(request):
