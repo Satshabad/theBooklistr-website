@@ -45,11 +45,6 @@ def messageSent(request):
     c = RequestContext(request, { 'pagename':pagename, 'title':title,  'message':message} )
     return render_to_response("titleandmessage.html", c)
 
-def index(request):
-    form = ContactSellerForm()
-    c = RequestContext(request, {'form':form})
-    return render_to_response("hero.html", c)
-    
 def delete(request):
     if request.method == 'GET':
         pagename = 'Delete Post'

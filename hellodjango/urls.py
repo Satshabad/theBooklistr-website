@@ -16,11 +16,9 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     
-    url(r'^$', 'app.views.index'),
+    url(r'^$', 'app.views.search', name='search'),
     url(r'^sell$', 'app.views.sell', name='sell'),
     url(r'^search$', 'app.views.search', name='search'),
-    url(r'^about$', 'app.views.about', name='about'),
-    url(r'^contact$', 'app.views.contact', name='contact'),
     url(r'^thanks$', 'app.views.thanks', name='thanks'), 
     url(r'^contactseller$', 'app.views.contactseller', name='contactseller'),
     url(r'^delete$', 'app.views.delete', name='delete'), 

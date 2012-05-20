@@ -1,30 +1,5 @@
 {% extends "searchbase.html" %}
 {% block content %}
-    <!-- main content -->
-    <div class="container">
-        <div class="row">
-            <div id="main-title" class="span8">
-                <h1>Search by class</h1>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="span12">
-                <div id="search-area">
-                    <form class="form-search" method="GET" action="/search">
-                        
-                        <div class="control-group">
-                            <div class="controls">
-                                <div id="search-box" class="input-append">
-                                    <input id="id_q" name="q" type="text" placeholder="i.e. CS241" class="span11 input-large">
-                                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i><span class="visuallyhidden">Search</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     <hr>
     <h1>Select your section</h1>
     {% for section in sections %}

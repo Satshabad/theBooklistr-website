@@ -1,91 +1,76 @@
 {% extends "searchbase.html" %}
 {% load bootstrap %}
-{% block content %}
-		<!-- main content -->
-		<div class="container">
-			<div class="row">
-				<div id="main-title" class="span8">
-					<h1>Search by class</h1>
+{% block content %} <!-- main content -->
+{% if not books %}
+<div class="container">
+	<div class="hero-unit">
+		<div class="row">
+			<div class="span12">
+				<h1>Welcome to Books</h1>
+				<p>
+					Search for your books by class above, or <a href="/sell" >post a book you want to sell</a>
+				</p>
+			</div>
+			<hr>
+		</div>
+	</div>
+	{% endif %} <p></p>
+	<!-- begin search results -->
+	{% for book in books %}
+	<div class = "row well">
+		<div class = "span11">
+			<h2>{{ book.title }}</h2>
+			<p>
+				Author: {{ book.author }}
+			</p>
+			<p>
+				ISBN: <b>{{ book.isbn }}</b>
+			</p>
+			{% if book.ReqOrOpt == 'Required' %}
+			<p style="color:red">
+				<b>{{ book.ReqOrOpt }}</b>
+			</p>
+			{% else %}
+			<p>
+				<b>{{ book.ReqOrOpt }}</b>
+			</p>
+			{% endif %}
+
+			{% if book.listings %}
+			<div class="container">
+				<div class='row'>
+					<div class="span4">
+						<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3>
+					</div>
+					<div class="span4">
+						<h3>Condition</h3>
+					</div>
 				</div>
 			</div>
-			<br>
-			<div class="row">
-				<div class="span12">
-					<div id="search-area">
-						<form class="form-search" method="GET" action="/search">
-							<div class="control-group">
-								<div class="controls">
-									<div id="search-box" class="input-append">
-										<input id="id_q" name="q" type="text" placeholder="i.e. CS241" class="span11 input-large">
-										<button class="btn btn-primary" type="submit">
-											<i class="icon-search"></i><span class="visuallyhidden">Search</span>
-										</button>
-									</div>
-								</div>
+			{% for post in book.listings %}
+			<ul class="breadcrumb">
+				<div class="container">
+					<div class='row'>
+						<div class="span3">
+							<h3>${{ post.price }}</h3>
+						</div>
+						<div class="span3">
+							<h3>{{ post.condition }}</h3>
+						</div>
+						<form method="GET" action="/contactseller">
+							<div class="span3">
+								<input class="btn btn-primary btn-large" type="submit" value="Contact Seller">
 							</div>
+							<input type="hidden" value="{{ post.id }}" name="postid">
+							</input>
 						</form>
 					</div>
 				</div>
-			</div>
-			<hr>
-			<p>
-			</p>
-			<!-- begin search results -->
-			{% for book in books %}
-			<div class = "row well">
-				<div class = "span11">
-					<h2>{{ book.title }}</h2>
-					<p>
-						Author: {{ book.author }}
-					</p>
-					<p>
-						ISBN: <b>{{ book.isbn }}</b>
-					</p>
-					{% if book.ReqOrOpt == 'Required' %}
-					<p style="color:red">
-						<b>{{ book.ReqOrOpt }}</b>
-					</p>
-					{% else %}
-					<p>
-						<b>{{ book.ReqOrOpt }}</b>
-					</p>
-					{% endif %}
-
-					{% if book.listings %}
-					<div class="container">
-						<div class='row'>
-							<div class="span4">
-								<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3>
-							</div>
-							<div class="span4">
-								<h3>Condition</h3>
-							</div>
-						</div>
-					</div>
-					{% for post in book.listings %}
-					<ul class="breadcrumb">
-						<div class="container">
-							<div class='row'>
-								<div class="span3">
-									<h3>${{ post.price }}</h3>
-								</div>
-								<div class="span3">
-									<h3>{{ post.condition }}</h3>
-								</div>
-								<form method="GET" action="/contactseller">
-									<div class="span3">
-										<input class="btn btn-primary btn-large" type="submit" value="Contact Seller">
-									</div>
-									<input type="hidden" value="{{ post.id }}" name="postid"></input>
-								</form>
-								
-							</div>
-						</div>
-					</ul>
-					{% endfor %}
-					{% endif %}
-				</div>
-			</div>
+			</ul>
 			{% endfor %}
-			<hr>
-{% endblock %}
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+	<hr>
+	{% endblock %}
