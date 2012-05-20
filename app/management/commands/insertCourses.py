@@ -1,3 +1,6 @@
+# This script will insert all the courses from courseData.txt 
+# into the app_course table.
+
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
 import pickle
