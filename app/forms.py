@@ -13,3 +13,7 @@ class SellBookForm(forms.Form):
        if len(isbn) < 10 or len(isbn) > 13:
            raise forms.ValidationError("Not a valid ISBN.")
        return isbn
+
+class ContactSellerForm(forms.Form):
+    email = forms.EmailField(required=True, label="Enter your email:")
+    message = forms.CharField (widget=forms.widgets.Textarea(),  label='Send a message to the seller:')
