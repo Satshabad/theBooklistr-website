@@ -155,8 +155,10 @@ def search(request):
             c = RequestContext(request, {'books':books, 'form':form})
             return render_to_response('search.html', c)
 
+		#############
         # The user has only entered a courseName (i.e. CS240)
-        #   -- list the sections of that course
+        #   -- List the sections of that course
+		#############
         elif  'q' in request.GET and request.GET['q']:
 
             # query the database for the courses with the name requested in q
@@ -166,13 +168,15 @@ def search(request):
             #sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
             # end test data
             
-            # pass the section to the user and the course they selected so it can passed back to us later
+            # pass the section to the user and the course they selected 
+            # so it can passed back to us later
             #c = RequestContext(request, {'sections':sections,  'coursename':request.GET['q']})
             c = RequestContext(request, {'courses' : courses})
             return render_to_response('search-selection.html', c)
             
         else:
-            # The user has not submitted any relevent data, or no data. Render a default search page.
+            # The user has not submitted any relevent data, or no data. 
+            # - Render a default search page.
             return render_to_response('search.html')
         
 def contactseller(request):
