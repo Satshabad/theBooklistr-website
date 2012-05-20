@@ -116,8 +116,8 @@
         <div class = "row well">
             <div class = "span11">    
                 <h2>{{ book.title }}</h2>
-                    <p>Author:{{ book.author }}</p>
-                    <p>ISBN:<b>{{ book.isbn }}</b></p>
+                    <p>Author: {{ book.author }}</p>
+                    <p>ISBN: <b>{{ book.isbn }}</b></p>
                     
                     {% if book.ReqOrOpt == 'Required' %}
                         <p style="color:red"><b>{{ book.ReqOrOpt }}</b></p>
