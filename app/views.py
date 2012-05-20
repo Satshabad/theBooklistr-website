@@ -32,15 +32,17 @@ def sell(request):
     return render_to_response('sell.html', RequestContext(request,  {'form':form}))
 
 def thanks(request):
+    pagename = 'Thank you'
     title = 'Thanks for your listing'
     message = 'It should be posted in a just a few minutes. An email has been sent to you.'
-    c = RequestContext(request, { 'title':title,  'message':message} )
+    c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message} )
     return render_to_response("titleandmessage.html", c)
     
 def messageSent(request):
+    pagename = 'Message Sent'
     title = 'Your message has been sent'
     message = 'The seller now has your email address and may contact you'
-    c = RequestContext(request, { 'title':title,  'message':message} )
+    c = RequestContext(request, { 'pagename':pagename, 'title':title,  'message':message} )
     return render_to_response("titleandmessage.html", c)
 
 def index(request):
@@ -50,6 +52,7 @@ def index(request):
     
 def delete(request):
     if request.method == 'GET':
+        pagename = 'Delete Post'
         title = 'Uh Oh'
         message = 'Sorry that did not compute'
         if 'secret' in request.GET and 'email' in request.GET:
@@ -63,7 +66,7 @@ def delete(request):
                  message = 'Thank you, please come back soon'
                 
                 
-        c = RequestContext(request, { 'title':title,  'message':message})
+        c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
         return render_to_response("titleandmessage.html", c)
             
         
