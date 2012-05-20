@@ -22,7 +22,17 @@ def sell(request):
             condition = form.cleaned_data['condition']
             
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
-            #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            message = '''Hey there book seller,
+            
+            Your book with isbn: '''+isbn+''' is posting to Books at $'''+price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
+            
+            Clicking this link will delete your posting.
+            <a href="http://oururl.com/delete?id_email=usersencodedemail&id_secret=123>Don't click this unless you mean it' </a>
+            
+            Thanks, The Books Team
+            
+            '''
+            #send_mail('Your book has been posted', message, 'noreply@Books.com', ['satshabad.music@gmail.com'], fail_silently=False)
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
         else:
