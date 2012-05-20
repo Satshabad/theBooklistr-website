@@ -7,6 +7,15 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
 
+# for amazon calls
+from amazonify import amazonify
+import BeautifulSoup
+import bottlenose
+
+AMAZON_API_KEY = 'AKIAI75ZQQCZ726SSJDA'
+AMAZON_SECRET_KEY = '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'
+AMAZON_ASSOC_TAG = 'books0ae3-20'
+
 # include this decorator on all post request view functions
 @csrf_protect
 def sell(request):
@@ -30,6 +39,19 @@ def sell(request):
 			# insert the new listing into the database
             listing.save()
             
+            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
+            message = '''Hey there book seller,
+            
+            Your book with isbn: '''+isbn+''' is posting to Books at $'''+price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
+            
+            Clicking this link will delete your posting.
+            <a href="http://oururl.com/delete?id_email=usersencodedemail&id_secret=123>Don't click this unless you mean it' </a>
+            
+            Thanks, The Books Team
+            
+            '''
+            #send_mail('Your book has been posted', message, 'noreply@Books.com', ['satshabad.music@gmail.com'], fail_silently=False)
+
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
         else:
@@ -81,8 +103,8 @@ def search(request):
         # The user has submitted a get request
         
         if  's' in request.GET and 'q' in request.GET:
-            # The user has selected a course and a section. Send the book listings
-            
+        # The user has selected a course and a section. Send the book listings
+           
             # TEST DATA. USE QUERIES INSTEAD HERE
             books = [{'title':'Call of the Wild', 'author':'Jack London', 
                     'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
@@ -90,6 +112,31 @@ def search(request):
             posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
             books[0]['listings'] = posting
             books[1]['listings'] = posting
+             
+            # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
+            amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
+
+            for book in books:
+                # Do this for each book. 
+                book['amazon'] = {}
+                response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''), ResponseGroup="ItemAttributes, Offers ",SearchIndex="Books", IdType="ISBN")
+                soup = BeautifulSoup.BeautifulSoup(response)
+                print book['isbn'].strip('-')
+                 
+                # check to see that response exists
+                if not soup.find('items').findAll('item'):
+                    continue
+                     
+                for item in soup.find('items').findAll('item'):
+                    if not(item.find('detailpageurl') and item.find('lowestusedprice') and item.find('lowestnewprice')):
+                        continue
+                    link = item.find('detailpageurl').text
+                    reflink = amazonify(link,  AMAZON_ASSOC_TAG)
+                    book['amazon']['link'] = reflink
+                    usedprice = item.find('lowestusedprice').find('formattedprice').text
+                    book['amazon']['usedprice'] = usedprice
+                    newprice = item.find('lowestnewprice').find('formattedprice').text
+                    book['amazon']['newprice'] = newprice
             # end test data
 
 			
