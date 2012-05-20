@@ -1,3 +1,4 @@
+{% load bootstrap %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -112,6 +113,9 @@
         </div>
     <hr>
     
+    <p>Just tried to contact {{ post_id }} </p>
+    
+    <!-- begin search results -->
     {% for book in books %}
         <div class = "row well">
             <div class = "span11">    
@@ -126,7 +130,6 @@
                     {% endif %}
                     
             {% if book.listings %}
-
                     	<div class="container">
                     		<div class='row'>
                     			<div class="span4"> <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3> </div><div class="span4"> <h3>Condition</h3></div>
@@ -134,10 +137,30 @@
                         </div>
 
                 {% for post in book.listings %}
+                <div id="modal{{ post.id }}" class="modal hide fade">
+			        <div class="modal-header">
+				        <button class="close" data-dismiss="modal">&times;</button>
+				        <h3>Contact Seller</h3>
+				        <p>{{ post.id }}</p>
+			        </div>
+				    <div class="modal-body">
+			            <form method="POST" action="/buy">
+    			            {% csrf_token %}
+			                {{ form }}
+			                <input type="hidden" name="id" value="{{ post.id }}">
+			            
+		            </div>
+		            <div class="modal-footer">
+			            <a href="#" class="btn" data-dismiss="modal" >Cancel</a>
+			            <input class="btn" type="submit" value="Send">
+			            </form>
+		            </div>
+	            </div>
+                
                 <ul class="breadcrumb">
                     	<div class="container">
                     		<div class='row'>
-                    			<div class="span4"> <h3>${{ post.price }}</h3> </div><div class="span4"><h3>{{ post.condition }}</h3></div><div class="span4"> <button class="btn btn-primary btn-large">Contact Seller</button></div>
+                    			<div class="span4"><h3>${{ post.price }}</h3> </div><div class="span4"><h3>{{ post.condition }}</h3></div><div class="span4"><a data-toggle="modal" href="#modal{{ post.id }}" class="btn btn-primary btn-large">Contact Seller</a></div>
                     		</div>
                         </div>
                         </ul>
@@ -151,7 +174,7 @@
     <footer>
       <p>&copy; Company 2012</p>
     </footer>
-    </div> <!-- /container -->
+    </div> <!-- /container end of main content-->
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
