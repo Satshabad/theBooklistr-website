@@ -46,20 +46,32 @@ def buy(request):
         books = [{'title':'Call of the Wild', 'author':'Jack London', 
                     'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
                     'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
-        posting = [{'condition':'Great', 'price':'10.00'},  {'condition':'OK', 'price':'13.00'},  {'condition':'Bad', 'price':'100.00'},  {'condition':'Sweet', 'price':'12.00'},  {'condition':'Meh', 'price':'11.00'}]
+        posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
         books[0]['listings'] = posting
         books[1]['listings'] = posting
-                    
-        c = RequestContext(request, {'books':books})
+        
+        
+        form = ContactSellerForm()    
+        c = RequestContext(request, {'books':books, 'form':form})
                
 
     elif request.method == 'POST':
-        pass
-        ### DO BUY STUFF ###
+        
+        ### TODO Contact Seller Stuff
+        ### find the id of the seller with request.POST['id']
+        
+        
+        # Test render_to_response to see if we can get the id of the seller
+        return render_to_response('buy.html', {'post_id':request.POST['id']})
+        
+        # Implement a success page
+        #return HttpResponseRedirect('/thanks')
 
     else:
+  
+        
         c = RequestContext(request)
-        return render_to_response('buy.html')
+        return render_to_response('buy.html', c)
         ### User starts a search ###
 
     ### TODO Implement form for buy ###
