@@ -56,12 +56,12 @@ def sell(request):
             Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
             
             Clicking this link will delete your posting.
-            <a href="http://oururl.com/delete?email='''+urllib.urlencode(form_email)+'''&secret='''+str(secretKey)+'''>Don't click this unless you mean it' </a>
+            <a href="http://oururl.com/delete?email='''+form_email.replace('@',  '%40')+'''&secret='''+str(secretKey)+'''>Don't click this unless you mean it' </a>
             
             Thanks, The Books Team
             
             '''
-            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', [email], fail_silently=False)
+            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', [form_email], fail_silently=False)
 
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
