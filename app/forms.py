@@ -5,7 +5,14 @@ class SellBookForm(forms.Form):
     isbn = forms.CharField(required=True, label="Enter the ISBN:", max_length=25, min_length=10)
     email = forms.EmailField(required=True, label="Enter your email:")
     price = forms.IntegerField(required=True, label="Enter your price:")
-    condition = forms.CharField(required=True, label="Condition of the book:",max_length=15)
+
+    CONDITION_CHOICES = (
+        ('poor', 'Poor'),
+        ('fair', 'Fair'),
+        ('good', 'Good'),
+        ('new', 'New')
+    )
+    condition = forms.ChoiceField(choices=CONDITION_CHOICES, required=True)
 
     def clean_isbn(self):
        isbn = self.cleaned_data['isbn']
