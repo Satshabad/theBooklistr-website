@@ -9,6 +9,7 @@ from models import ListedBook
 from models import Book
 from models import Section
 import random
+import urllib
 
 # for amazon calls
 from amazonify import amazonify
@@ -50,20 +51,21 @@ def sell(request):
             listing.save()
             
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
-            #message = '''Hey there book seller,
+            message = '''Hey there book seller,
             
-            #Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
+            Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
             
-            #Clicking this link will delete your posting.
-            #<a href="http://oururl.com/delete?id_email=usersencodedemail&id_secret=123>Don't click this unless you mean it' </a>
+            Clicking this link will delete your posting.
+            <a href="http://oururl.com/delete?email='''+urllib.urlencode(form_email)+'''&secret='''+secretKey+'''>Don't click this unless you mean it' </a>
             
-            #Thanks, The Books Team
+            Thanks, The Books Team
             
-            #'''
-            #send_mail('Your book has been posted', message, 'noreply@Books.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            '''
+            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', ['satshabad.music@gmail.com'], fail_silently=False)
 
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
+
         else:
             return render_to_response('sell.html', RequestContext(request,  {'form':form}))
     form = SellBookForm()
@@ -93,10 +95,10 @@ def delete(request):
         toDelete.delete()
         if 'secret' in request.GET and 'email' in request.GET:
             
-            toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
-            toDelete.delete()
             # DO DATA VALIDATION HERE
             if True:
+                toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
+                toDelete.delete()
 
                 # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
                 title = 'Post deleted'
