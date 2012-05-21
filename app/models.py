@@ -28,6 +28,9 @@ class ListedBook(models.Model):
     email = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     condition = models.CharField(max_length=5)
+    
+    def __unicode__(self):
+        return u"%s" % self.email
 
 class Book(models.Model):
     isbn = models.CharField(max_length=30)
