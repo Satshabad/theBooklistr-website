@@ -122,7 +122,7 @@ def search(request):
             
             returnBooks = []
             for dbBook in books2:
-                newBook = {'title':'faketitle', 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
+                newBook = {'title':dbBook.title, 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
                 listings = ListedBook.objects.filter(isbn=newBook['isbn'])
                 newBook['listings'] = listings
                 returnBooks.append(newBook)

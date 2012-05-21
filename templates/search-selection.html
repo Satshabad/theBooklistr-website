@@ -1,5 +1,6 @@
 {% extends "searchbase.html" %}
 {% block content %}
+{% if sections %}
     <hr>
     <h1>Select your section</h1>
     {% for section in sections %}
@@ -11,5 +12,7 @@
         </div>
     {% endfor %}
     
+{% endif %}
+   
     <hr>
     {% endblock %}
