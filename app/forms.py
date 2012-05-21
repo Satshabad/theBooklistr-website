@@ -7,10 +7,10 @@ class SellBookForm(forms.Form):
     price = forms.IntegerField(required=True, label="Enter your price:")
 
     CONDITION_CHOICES = (
-        ('poor', 'Poor'),
-        ('fair', 'Fair'),
+        ('new', 'New'), 
         ('good', 'Good'),
-        ('new', 'New')
+        ('fair', 'Fair'),
+        ('poor', 'Poor')
     )
     condition = forms.ChoiceField(choices=CONDITION_CHOICES, required=True)
 
