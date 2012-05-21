@@ -8,6 +8,7 @@ from django.core.mail import send_mail
 from models import ListedBook
 from models import Book
 from models import Section
+import random
 
 # for amazon calls
 from amazonify import amazonify
@@ -34,9 +35,12 @@ def sell(request):
             #   Clicking this link will delete their post
             #send_mail('Subject here', 'Here is the message.', 'from@example.com', 
             #   ['satshabad.music@gmail.com'], fail_silently=False)
-            secret_key = '1';
 
+            # should be strengthened...
+            secretKey = random.randint(1, 99999)
+            
             listing = ListedBook(
+                secret_key = secretKey,
                 isbn = form_isbn, 
                 email = form_email, 
                 price = form_price, 
@@ -85,15 +89,18 @@ def delete(request):
         pagename = 'Delete Post'
         title = 'Uh Oh'
         message = 'Sorry that did not compute'
+        toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
+        toDelete.delete()
         if 'secret' in request.GET and 'email' in request.GET:
             
+            toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
+            toDelete.delete()
             # DO DATA VALIDATION HERE
             if True:
-                
+
                 # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
-                 
-                 title = 'Post deleted'
-                 message = 'Thank you, please come back soon'
+                title = 'Post deleted'
+                message = 'Thank you, please come back soon'
                 
                 
         c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
@@ -122,7 +129,7 @@ def search(request):
             
             returnBooks = []
             for dbBook in books2:
-                newBook = {'title':'faketitle', 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
+                newBook = {'title':dbBook.title, 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
                 listings = ListedBook.objects.filter(isbn=newBook['isbn'])
                 newBook['listings'] = listings
                 returnBooks.append(newBook)
