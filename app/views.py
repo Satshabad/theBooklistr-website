@@ -56,7 +56,7 @@ def sell(request):
             Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
             
             Clicking this link will delete your posting.
-            <a href="http://oururl.com/delete?email='''+urllib.urlencode(form_email)+'''&secret='''+secretKey+'''>Don't click this unless you mean it' </a>
+            <a href="http://oururl.com/delete?email='''+urllib.urlencode(form_email)+'''&secret='''+str(secretKey)+'''>Don't click this unless you mean it' </a>
             
             Thanks, The Books Team
             
