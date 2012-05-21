@@ -54,7 +54,7 @@ def sell(request):
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
             message = '''Hey there book seller,
             
-            Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
+            Your book with isbn: '''+form_isbn+''' is posting to Book Listr people will now be able to see it and we'll send you their email if they want to get in touch with you.
 
             Thanks, The Books Team
             
