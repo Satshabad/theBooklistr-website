@@ -23,7 +23,7 @@ class Section(models.Model):
 
 # ideas
 class ListedBook(models.Model):
-    secret_key = models.IntegerField(primary_key=True)
+    secret_key = models.IntegerField()
     isbn = models.CharField(max_length=30)
     email = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)

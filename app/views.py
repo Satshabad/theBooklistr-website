@@ -220,8 +220,8 @@ def contactseller(request):
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
             
-           ### TODO Contact Seller Stuff
-           #send_mail('Subject here', 'Here is the message.', 'from@example.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            listing = BookListed.objects.filter(id=request.POST['postid'])
+            send_mail('Someone wants to buy your book on Book listr', message + '\n\n You can contact this person at '+ email + '\n\n Thanks, the Book Listr Team', 'noreply@theBookListr.com', [listing.email], fail_silently=False)
             return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
