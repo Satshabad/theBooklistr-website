@@ -222,7 +222,7 @@ def contactseller(request):
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
             
-            listing = BookListed.objects.filter(id=request.POST['postid'])
+            listing = ListedBook.objects.filter(id=request.POST['postid'])
             send_mail('Someone wants to buy your book on Book listr', message + '\n\n You can contact this person at '+ email + '\n\n Thanks, the Book Listr Team', 'noreply@theBookListr.com', [listing.email], fail_silently=False)
             return HttpResponseRedirect('/message')
         else:
