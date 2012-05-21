@@ -49,14 +49,14 @@ def sell(request):
 
             # insert the new listing into the database
             listing.save()
-            
+            uniemail = u"%s" %form_email.replace('@',  '%40')
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
             message = '''Hey there book seller,
             
             Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
             
             Clicking this link will delete your posting.
-            <a href="http://oururl.com/delete?email='''+form_email.replace('@',  '%40')+'''&secret='''+str(secretKey)+'''>Don't click this unless you mean it' </a>
+            <a href="http://oururl.com/delete?email='''+uniemail+'''&secret='''+str(secretKey)+'''>Don't click this unless you mean it' </a>
             
             Thanks, The Books Team
             
