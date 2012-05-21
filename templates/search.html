@@ -16,6 +16,7 @@
 	</div>
 	{% endif %} <p></p>
 	<!-- begin search results -->
+
 	{% for book in books %}
 	<div class = "row well">
 		<div class = "span11">
@@ -26,13 +27,13 @@
 			<p>
 				ISBN: <b>{{ book.isbn }}</b>
 			</p>
-			{% if book.ReqOrOpt == 'Required' %}
+			{% if book.isRequired == 'Required' %}
 			<p style="color:red">
-				<b>{{ book.ReqOrOpt }}</b>
+				<b>{{ book.isRequired }}</b>
 			</p>
 			{% else %}
 			<p>
-				<b>{{ book.ReqOrOpt }}</b>
+				<b>{{ book.isRequired }}</b>
 			</p>
 			{% endif %}
 			<div class="container">

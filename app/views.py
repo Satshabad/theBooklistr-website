@@ -6,7 +6,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
-from models import Course
+from models import Book
+from models import Section
 
 # for amazon calls
 from amazonify import amazonify
@@ -35,22 +36,26 @@ def sell(request):
             #   ['satshabad.music@gmail.com'], fail_silently=False)
             secret_key = '1';
 
-            listing = ListedBook(private_id = secret_key, isbn = form_isbn, email = form_email, price = form_price, condition = form_condition)
+            listing = ListedBook(
+                isbn = form_isbn, 
+                email = form_email, 
+                price = form_price, 
+                condition = form_condition)
 
             # insert the new listing into the database
             listing.save()
             
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
-            message = '''Hey there book seller,
+            #message = '''Hey there book seller,
             
-            Your book with isbn: '''+isbn+''' is posting to Books at $'''+price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
+            #Your book with isbn: '''+form_isbn+''' is posting to Books at $'''+form_price+''', people will now be able to see it and we'll send you their email if they want to get in touch with you.
             
-            Clicking this link will delete your posting.
-            <a href="http://oururl.com/delete?id_email=usersencodedemail&id_secret=123>Don't click this unless you mean it' </a>
+            #Clicking this link will delete your posting.
+            #<a href="http://oururl.com/delete?id_email=usersencodedemail&id_secret=123>Don't click this unless you mean it' </a>
             
-            Thanks, The Books Team
+            #Thanks, The Books Team
             
-            '''
+            #'''
             #send_mail('Your book has been posted', message, 'noreply@Books.com', ['satshabad.music@gmail.com'], fail_silently=False)
 
             # Redirect to a confirmation of Book posting page 
@@ -108,29 +113,42 @@ def search(request):
 		# - Provide the books that are listed for that course and section.
 		#############
         if  's' in request.GET and 'q' in request.GET:
-            courses = Course.objects.filter(name = request.GET['q'])
 
             #  retrieve the list of books that correspond to a Course and Section
-            correctBooks = Course.objects.filter(name = request.GET['q'], sectionID = request.GET['s'])
-           
+            #correctBooks = Section.objects.filter(courseName = request.GET['q'])
+
+            # VALIDATE
+            books2 = Book.objects.filter(sectionID=request.GET['s'])
+            
+            returnBooks = []
+            for dbBook in books2:
+                newBook = {'title':'faketitle', 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
+                listings = ListedBook.objects.filter(isbn=newBook['isbn'])
+                newBook['listings'] = listings
+                returnBooks.append(newBook)
+            
+            
+            # go through the list of books and find the listings
+            
+            
             # TEST DATA. USE QUERIES INSTEAD HERE
-            books = [{'title':'Call of the Wild', 'author':'Jack London', 
-                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
-                    'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
-            posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
-            books[0]['listings'] = posting
-            books[1]['listings'] = posting
+ #           books = [{'title':'Call of the Wild', 'author':'Jack London', 
+#                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
+  #                  'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
+#            posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
+           # books[0]['listings'] = posting
+           # books[1]['listings'] = posting
 
              
             # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
             amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
 
-            for book in books:
+            for book in returnBooks:
                 # Do this for each book. 
                 book['amazon'] = {}
                 response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''), ResponseGroup="ItemAttributes, Offers ",SearchIndex="Books", IdType="ISBN")
                 soup = BeautifulSoup.BeautifulSoup(response)
-                print book['isbn'].strip('-')
+                
                  
                 # check to see that response exists
                 if not soup.find('items').findAll('item'):
@@ -152,7 +170,9 @@ def search(request):
         
             # return the search results and a form for them to contact the seller
             form = ContactSellerForm()    
-            c = RequestContext(request, {'books':books, 'form':form})
+            c = RequestContext(request, {'books':returnBooks, 'form':form})
+
+            #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
             return render_to_response('search.html', c)
 
 		#############
@@ -161,17 +181,15 @@ def search(request):
 		#############
         elif  'q' in request.GET and request.GET['q']:
 
-            # query the database for the courses with the name requested in q
-            courses = Course.objects.filter(name = request.GET['q'])
+            # VALIDATE 
 
-            # TEST DATA. USE QUERIES INSTEAD HERE
-            #sections = [{'name':'E-01',  'instructor':'Gershman',  'section_id':123214}, {'name':'E-02',  'instructor':'Gershman',  'section_id':1234},  {'name':'E-03',  'instructor':'Rich',  'section_id':1214}]
-            # end test data
-            
+            # query the database for the courses with the name requested in q
+            sections = Section.objects.filter(courseName = request.GET['q'])
+
             # pass the section to the user and the course they selected 
             # so it can passed back to us later
-            #c = RequestContext(request, {'sections':sections,  'coursename':request.GET['q']})
-            c = RequestContext(request, {'courses' : courses})
+
+            c = RequestContext(request, {'sections' : sections, 'coursename':request.GET['q']})
             return render_to_response('search-selection.html', c)
             
         else:

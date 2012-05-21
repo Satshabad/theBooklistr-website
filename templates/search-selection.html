@@ -2,10 +2,10 @@
 {% block content %}
     <hr>
     <h1>Select your section</h1>
-    {% for course in courses %}
+    {% for section in sections %}
         <div class = "row well">
             <div class = "span11">    
-                <h2><a href="/search?s={{ course.sectionID }}&q={{ course.name }}">{{ course.sectionName }} - {{ course.instructor }}</a></h2>
+                <h2><a href="/search?s={{ section.sectionID }}&q={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
                     
             </div>
         </div>

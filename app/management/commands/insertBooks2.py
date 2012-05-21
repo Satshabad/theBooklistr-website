@@ -33,16 +33,15 @@ class Command(NoArgsCommand):
                         newPrice = book['broncoListPrice']
                         newEdition = book['edition']
                         newRequired = book['isRequired']
+
                         newBook = Book(
                             isbn = newISBN,
-                            author = newAuthor,
+                            sectionID = newSectionID,
                             required = newRequired,
                             broncoPrice = newPrice,
-                            binding = newBinding,
+                            author = newAuthor,
                             edition = newEdition,
-                            sectionID = newSectionID,
-                            courseName = newCourseName,
-                            sectionName = newSectionName
+                            binding = newBinding,
                         )
                         newBook.save()
                         print newBook

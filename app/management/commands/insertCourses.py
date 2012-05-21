@@ -4,7 +4,7 @@
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
 import pickle
-from app.models import Course
+from app.models import Section
 
 class Command(NoArgsCommand):
 
@@ -21,13 +21,12 @@ class Command(NoArgsCommand):
 		for dept in data:
 			for courses in dept['courses']:
 				newCourseName = courses['name']
-				newCourseID = courses['id']
 				for section in courses['sections']:
 					newSectionID = section['id']
 					newSectionName = section['name']
 					newInstructor = section['instructor']
-					newCourse = Course(name = newCourseName, 
-						courseID = newCourseID, 
+					newCourse = Section(
+                        courseName = newCourseName, 
 						sectionID = newSectionID, 
 						sectionName = newSectionName, 
 						instructor = newInstructor)
