@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>Buy</title>
+		<title>Cal Poly Book Listr</title>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Le styles -->
@@ -58,7 +58,7 @@
 			<div class="navbar-inner">
 				<div class="container">
 					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a>
-					<a class="brand" href="/">Books</a>
+					<a class="brand" href="/">Cal Poly Book Listr</a>
 					<div class="nav-collapse">
 						<ul class="nav">
 							<li class="active">
@@ -89,7 +89,7 @@
 								<div class="controls">
 									<div id="search-box" class="input-append">
 										<input id="id_q" name="q" type="text" placeholder="i.e. CS241" class="span11 input-large">
-										<button class="btn btn-primary" type="submit">
+										<button class="btn-large btn-primary" type="submit">
 											<i class="icon-search"></i><span class="visuallyhidden">Search</span>
 										</button>
 									</div>
@@ -102,11 +102,15 @@
 			<hr>
 			{% block content %}{% endblock %}
 			<hr>
-			<footer>
-				<p>
-					&copy; Company 2012
-				</p>
-			</footer>
+            <div class="row">
+                <div class="offset5 span6">
+                    <footer>
+                        <p>
+                            &copy; 2012 The Book Listr 
+                        </p>
+                    </footer>
+                </div>
+            </div>
 		</div>
 		<!-- /container -->
 		<!-- Le javascript
