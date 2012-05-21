@@ -61,7 +61,7 @@ def sell(request):
             Thanks, The Books Team
             
             '''
-            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', ['satshabad.music@gmail.com'], fail_silently=False)
+            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', [email], fail_silently=False)
 
             # Redirect to a confirmation of Book posting page 
             return HttpResponseRedirect('/thanks')
