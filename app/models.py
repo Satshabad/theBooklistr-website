@@ -36,5 +36,6 @@ class Book(models.Model):
     #sectionName = models.CharField(max_length=30)
     broncoPrice = models.DecimalField(max_digits=10, decimal_places=4)
     author = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
     edition = models.CharField(max_length=4, null=True)
     binding = models.CharField(max_length=15, null=True)
