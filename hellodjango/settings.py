@@ -1,7 +1,7 @@
 # Django settings for hellodjango project.
 import os
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,16 +12,16 @@ MANAGERS = ADMINS
 
 SERVER_DIR = os.path.abspath(".")
 
-#DATABASES = {
-#    'default': {
-#		'ENGINE' : 'django.db.backends.mysql',
- #       'NAME' : 'hackathon', 	# Or path to database file if using sqlite3.
- #       'USER' : 'bookclient', 		# Not used with sqlite3.
- #       'PASSWORD' : '111hackathon222', 	# Not used with sqlite3.
-#        'HOST' : '192.168.1.13',	# Set to empty string for localhost. Not used with sqlite3.
-#        'PORT' : '3306',		# Set to empty string for default. Not used with sqlite3.
-#    }
-#}
+DATABASES = {
+    'default': {
+		'ENGINE' : 'django.db.backends.mysql',
+        'NAME' : 'hackathon', 	# Or path to database file if using sqlite3.
+        'USER' : 'root', 		# Not used with sqlite3.
+        'PASSWORD' : '111hackathon222', 	# Not used with sqlite3.
+        'HOST' : 'localhost',	# Set to empty string for localhost. Not used with sqlite3.
+        'PORT' : '3306',		# Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -160,9 +160,4 @@ LOGGING = {
         },
     }
 }
-import os
-EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
-EMAIL_HOST= 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
+from local_settings.py import *
