@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ pagename }}{% endblock %}
+
+{% block content %}
+{% load bootstrap %}
+<div class="container">
+	<div class="hero-unit">
+		<div class="row">
+			<div class="offset1 span6">
+				<h1>How this works</h1>
+				<p>
+					You give us a little information about the book and your email address. We will list it on this site and keep your email private.
+					<br>If anyone wants to buy your book, we'll email you with their contact information. We never reveal your email address to anyone.
+				<p>
+			</div>
+			<form method="POST" action="/sell">
+				{% csrf_token %}
+				<div class="span3">
+					{% if form.errors %}
+					<p style="color: red;">
+						Please correct the error{{ form.errors|pluralize }} below.
+					</p>
+					{% endif %}
+
+					{{ form|bootstrap }}
+					<input class="btn btn-primary btn-large" type="submit" value="List your book &raquo;">
+				</div>
+			</form>
+		</div>
+	</div>
+	{% endblock %}

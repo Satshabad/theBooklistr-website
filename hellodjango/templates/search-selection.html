@@ -1,0 +1,18 @@
+{% extends "searchbase.html" %}
+{% block content %}
+{% if sections %}
+    <hr>
+    <h1>Select your section</h1>
+    {% for section in sections %}
+        <div class = "row well">
+            <div class = "span11">    
+                <h2><a href="/search?s={{ section.sectionID }}&q={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
+                    
+            </div>
+        </div>
+    {% endfor %}
+    
+{% endif %}
+   
+    <hr>
+    {% endblock %}
