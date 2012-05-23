@@ -3,6 +3,8 @@ local_settings.py
 mysql.cred
 sendgrid.cred
 /static
+
+*.swp
 venv
 *~
 *.py[co]
