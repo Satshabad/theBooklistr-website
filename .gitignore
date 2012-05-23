@@ -1,4 +1,8 @@
-
+booklistr.log
+local_settings.py
+mysql.cred
+sendgrid.cred
+/static
 venv
 *~
 *.py[co]
