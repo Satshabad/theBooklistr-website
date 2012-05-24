@@ -10,6 +10,8 @@ from models import Book
 from models import Section
 import random
 import urllib
+from django import template
+from django.template import Context
 
 # for amazon calls
 from amazonify import amazonify
@@ -221,9 +223,10 @@ def contactseller(request):
             
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
-            
+            t = get_template('contactselleremail.html')
+            c = Context({'message':message, 'email':email})
             listing = ListedBook.objects.filter(id=request.POST['postid'])
-            send_mail('Someone wants to buy your book on Book listr', message + '\n\n You can contact this person at '+ email + '\n\n Thanks, the Book Listr Team', 'noreply@theBookListr.com', [listing[0].email], fail_silently=False)
+            send_mail('Someone wants to buy your book on Book listr',t.render(c), 'noreply@theBookListr.com', [listing[0].email], fail_silently=False)
             return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
