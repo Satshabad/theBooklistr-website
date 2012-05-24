@@ -10,7 +10,9 @@ from models import Book
 from models import Section
 import random
 import urllib
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django import template
 from django.template import Context
 import re
@@ -235,10 +237,13 @@ def contactseller(request):
             
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
-            t = get_template('contactselleremail.html')
-            c = Context({'message':message, 'email':email})
+            html_content = render_to_string('contactselleremail.html', {'message':message, 'email': email})
+            text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
             listing = ListedBook.objects.filter(id=request.POST['postid'])
-            send_mail('Someone wants to buy your book on Book listr',t.render(c), 'noreply@theBookListr.com', [listing[0].email], fail_silently=False)
+
+            msg = EmailMultiAlternatives('Someone from Booklistr wants to by your book', text_content, 'noreply@theBooklistr.com', [listing[0].email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
             return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
