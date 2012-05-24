@@ -10,7 +10,7 @@ from models import Book
 from models import Section
 import random
 import urllib
-
+from django.template.loader import get_template
 from django import template
 from django.template import Context
 import re
