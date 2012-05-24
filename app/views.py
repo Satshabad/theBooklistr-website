@@ -10,8 +10,11 @@ from models import Book
 from models import Section
 import random
 import urllib
+
 from django import template
 from django.template import Context
+import re
+
 
 # for amazon calls
 from amazonify import amazonify
@@ -129,6 +132,11 @@ def search(request):
             #correctBooks = Section.objects.filter(courseName = request.GET['q'])
 
             # VALIDATE
+            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None \
+                or re.match(r'^\d{1,30}$', request.GET['s']) is None:
+                # The user has submitted an irregular section id or course name
+                return render_to_response('search.html')
+
             books2 = Book.objects.filter(sectionID=request.GET['s'])
             
             returnBooks = []
@@ -193,6 +201,9 @@ def search(request):
         elif  'q' in request.GET and request.GET['q']:
 
             # VALIDATE 
+            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
+                # The user has submitted an irregular course name 
+                return render_to_response('search.html')
 
             # query the database for the courses with the name requested in q
             sections = Section.objects.filter(courseName = request.GET['q'])
@@ -206,6 +217,7 @@ def search(request):
         else:
             # The user has not submitted any relevent data, or no data. 
             # - Render a default search page.
+
             return render_to_response('search.html')
         
 def contactseller(request):

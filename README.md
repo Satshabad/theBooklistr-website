@@ -1,5 +1,4 @@
-django-bootstrap-gunicorn-starter
+theBooklistr-website
 =================================
 
-This was the basic hull of a website (heroku compatible), but thenwe turned it into a full blown web app. 
-If you go far back enough in the commit histroy, you can get the starter shell.
+This is the source code for www.thebooklistr.com. if you would like to contribute, send a message to one of the commiters.
