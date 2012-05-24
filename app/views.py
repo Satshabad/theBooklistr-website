@@ -10,9 +10,13 @@ from models import Book
 from models import Section
 import random
 import urllib
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+
+from django.template.loader import get_template
+
 from django import template
 from django.template import Context
 import re
@@ -49,9 +53,9 @@ def sell(request):
             
             listing = ListedBook(
                 secret_key = secretKey,
-                isbn = form_isbn, 
-                email = form_email, 
-                price = form_price, 
+                isbn = form_isbn,
+                email = form_email,
+                price = form_price,
                 condition = form_condition)
 
             # insert the new listing into the database
@@ -60,17 +64,17 @@ def sell(request):
             unisecret = u"%s" % str(secretKey)
             # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
             message = '''Hey there book seller,
-            
+
             Your book with isbn: '''+form_isbn+''' is posting to Book Listr  people will now be able to see it and we'll send you their email if they want to get in touch with you.
 
             Thanks, The Book Listr Team
-            
+
             '''
-            
+
             # PUT BACK Clicking this link will delete your posting. <a href="http://oururl.com/delete?email='''+uniemail+'''&secret='''+unisecret+'''>Don't click this unless you mean it' </a>
             send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', [form_email], fail_silently=False)
 
-            # Redirect to a confirmation of Book posting page 
+            # Redirect to a confirmation of Book posting page
             return HttpResponseRedirect('/thanks')
 
         else:
@@ -85,7 +89,7 @@ def thanks(request):
     message = 'It should be posted in a just a few minutes. An email has been sent to you.'
     c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message} )
     return render_to_response("titleandmessage.html", c)
-    
+
 def messageSent(request):
     pagename = 'Message Sent'
     title = 'Your message has been sent'
@@ -101,7 +105,7 @@ def delete(request):
         toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
         toDelete.delete()
         if 'secret' in request.GET and 'email' in request.GET:
-            
+
             # DO DATA VALIDATION HERE
             if True:
                 toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
@@ -110,13 +114,13 @@ def delete(request):
                 # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
                 title = 'Post deleted'
                 message = 'Thank you, please come back soon'
-                
-                
+
+
         c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
         return render_to_response("titleandmessage.html", c)
-            
-        
-        
+
+
+
 
 @csrf_protect
 def search(request):
@@ -125,7 +129,7 @@ def search(request):
     if request.method == "GET":
 
 		#############
-        # The user has selected a course and a section. 
+        # The user has selected a course and a section.
 		# - Provide the books that are listed for that course and section.
 		#############
         if  's' in request.GET and 'q' in request.GET:
@@ -140,41 +144,41 @@ def search(request):
                 return render_to_response('search.html')
 
             books2 = Book.objects.filter(sectionID=request.GET['s'])
-            
+
             returnBooks = []
             for dbBook in books2:
                 newBook = {'title':dbBook.title, 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
                 listings = ListedBook.objects.filter(isbn=newBook['isbn'])
                 newBook['listings'] = listings
                 returnBooks.append(newBook)
-            
-            
+
+
             # go through the list of books and find the listings
-            
-            
+
+
             # TEST DATA. USE QUERIES INSTEAD HERE
- #           books = [{'title':'Call of the Wild', 'author':'Jack London', 
-#                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan', 
+ #           books = [{'title':'Call of the Wild', 'author':'Jack London',
+#                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan',
   #                  'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
 #            posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
            # books[0]['listings'] = posting
            # books[1]['listings'] = posting
 
-             
+
             # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
             amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
 
             for book in returnBooks:
-                # Do this for each book. 
+                # Do this for each book.
                 book['amazon'] = {}
                 response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''), ResponseGroup="ItemAttributes, Offers ",SearchIndex="Books", IdType="ISBN")
                 soup = BeautifulSoup.BeautifulSoup(response)
-                
-                 
+
+
                 # check to see that response exists
                 if not soup.find('items').findAll('item'):
                     continue
-                     
+
                 for item in soup.find('items').findAll('item'):
                     if not(item.find('detailpageurl') and item.find('lowestusedprice') and item.find('lowestnewprice')):
                         continue
@@ -187,10 +191,10 @@ def search(request):
                     book['amazon']['newprice'] = newprice
             # end test data
 
-            
-        
+
+
             # return the search results and a form for them to contact the seller
-            form = ContactSellerForm()    
+            form = ContactSellerForm()
             c = RequestContext(request, {'books':returnBooks, 'form':form})
 
             #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
@@ -202,39 +206,39 @@ def search(request):
 		#############
         elif  'q' in request.GET and request.GET['q']:
 
-            # VALIDATE 
+            # VALIDATE
             if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
-                # The user has submitted an irregular course name 
+                # The user has submitted an irregular course name
                 return render_to_response('search.html')
 
             # query the database for the courses with the name requested in q
             sections = Section.objects.filter(courseName = request.GET['q'])
 
-            # pass the section to the user and the course they selected 
+            # pass the section to the user and the course they selected
             # so it can passed back to us later
 
             c = RequestContext(request, {'sections' : sections, 'coursename':request.GET['q']})
             return render_to_response('search-selection.html', c)
-            
+
         else:
-            # The user has not submitted any relevent data, or no data. 
+            # The user has not submitted any relevent data, or no data.
             # - Render a default search page.
 
             return render_to_response('search.html')
-        
+
 def contactseller(request):
-    
+
     if request.method == "POST":
         # The user has submitted a post request
-        
+
         if  not 'postid' in request.POST:
             # if they did not submit a postid, which is automatic, then just redirect them to the home page.
             return HttpResponseRedirect('/search')
-            
+
         form = ContactSellerForm(request.POST)
         if form.is_valid():
-            
-            
+
+
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
             html_content = render_to_string('contactselleremail.html', {'message':message, 'email': email})
@@ -247,12 +251,12 @@ def contactseller(request):
             return HttpResponseRedirect('/message')
         else:
             return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
-            
+
     if request.method == "GET":
         if  not 'postid' in request.GET:
             # if they did not submit a postid, which is automatic, then just redirect them to the home page.
             return HttpResponseRedirect('/search')
-            
-        form = ContactSellerForm() 
+
+        form = ContactSellerForm()
         c = RequestContext(request,  {'form':form,  'postid':request.GET['postid']})
         return render_to_response("contactseller.html", c)
