@@ -91,20 +91,22 @@ def delete(request):
         if 's' in request.GET:
 
 
+            isValid = False
             # a little trick here. If the list is not empty then at
             # least one of the charaters in s is not hex.
             if len(request.GET['s']) == 16 and not [x for x in request.GET['s'] if not x in string.hexdigits]:
                 isValid = True
-            else:
-                isvalid = False
 
             if isValid:
-                toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
-                toDelete.delete()
+                try:
 
-                # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
-                title = 'Post deleted'
-                message = 'Thank you, please come back soon'
+                    toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
+                    toDelete.delete()
+                    title = 'Post deleted'
+                    message = 'Thank you, please come back soon'
+
+                except ListedBook.DoesNotExist:
+                    pass
 
 
         c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
