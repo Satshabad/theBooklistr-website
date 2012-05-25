@@ -20,7 +20,7 @@ from django.template.loader import get_template
 from django import template
 from django.template import Context
 import re
-
+import string
 
 # for amazon calls
 from amazonify import amazonify
@@ -41,15 +41,9 @@ def sell(request):
             form_email = form.cleaned_data['email']
             form_price = form.cleaned_data['price']
             form_condition = form.cleaned_data['condition']
-
-            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL 
-            # in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. 
-            #   Clicking this link will delete their post
-            #send_mail('Subject here', 'Here is the message.', 'from@example.com', 
-            #   ['satshabad.music@gmail.com'], fail_silently=False)
-
-            # should be strengthened...
-            secretKey = random.randint(1, 99999)
+            
+            # A random 16 digit hex number
+            secretKey = ''.join(random.choice(string.hexdigits) for n in xrange(16))
             
             listing = ListedBook(
                 secret_key = secretKey,
@@ -57,24 +51,16 @@ def sell(request):
                 email = form_email,
                 price = form_price,
                 condition = form_condition)
-
+            secretKey = str(secretKey)
             # insert the new listing into the database
             listing.save()
-            uniemail = u"%s" %form_email.replace('@',  '%40')
-            unisecret = u"%s" % str(secretKey)
-            # NOW GENERATE SECRET KEY and SEND TO USER IN EMAIL in the form http://oururl.com/delete?id_email=usersencodedemail&id_secret. Clicking this link will delete their post
-            message = '''Hey there book seller,
+            html_content = render_to_string('successpostingemail.html', {'deleteLink':'www.thebooklistr.com/delete?s='+secretKey+'&e='+form_email,})
+            text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
 
-            Your book with isbn: '''+form_isbn+''' is posting to Book Listr  people will now be able to see it and we'll send you their email if they want to get in touch with you.
-
-            Thanks, The Book Listr Team
-
-            '''
-
-            # PUT BACK Clicking this link will delete your posting. <a href="http://oururl.com/delete?email='''+uniemail+'''&secret='''+unisecret+'''>Don't click this unless you mean it' </a>
-            send_mail('Your book has been posted', message, 'noreply@thebooklistr.com', [form_email], fail_silently=False)
-
-            # Redirect to a confirmation of Book posting page
+            msg = EmailMultiAlternatives('Your book has been posted', text_content, 'noreply@theBooklistr.com', [form_email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+         
             return HttpResponseRedirect('/thanks')
 
         else:
@@ -102,13 +88,13 @@ def delete(request):
         pagename = 'Delete Post'
         title = 'Uh Oh'
         message = 'Sorry that did not compute'
-        toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
+        toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
         toDelete.delete()
         if 'secret' in request.GET and 'email' in request.GET:
 
             # DO DATA VALIDATION HERE
             if True:
-                toDelete = ListedBook.objects.get(secret_key=request.GET['secret'])
+                toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
                 toDelete.delete()
 
                 # DELETE USERS POST HERE, MAKE SURE IT's IN DB, if not use error message
