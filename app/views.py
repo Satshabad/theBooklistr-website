@@ -54,7 +54,7 @@ def sell(request):
             secretKey = str(secretKey)
             # insert the new listing into the database
             listing.save()
-            html_content = render_to_string('successpostingemail.html', {'deleteLink':'www.thebooklistr.com/delete?s='+secretKey+'&e='+form_email,})
+            html_content = render_to_string('successpostingemail.html', {'deleteLink':'www.thebooklistr.com/delete?s='+secretKey})
             text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
 
             msg = EmailMultiAlternatives('Your book has been posted', text_content, 'noreply@theBooklistr.com', [form_email])
@@ -87,13 +87,18 @@ def delete(request):
     if request.method == 'GET':
         pagename = 'Delete Post'
         title = 'Uh Oh'
-        message = 'Sorry that did not compute'
-        toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
-        toDelete.delete()
-        if 'secret' in request.GET and 'email' in request.GET:
+        message = 'Sorry, that did not compute'
+        if 's' in request.GET:
 
-            # DO DATA VALIDATION HERE
-            if True:
+
+            # a little trick here. If the list is not empty then at
+            # least one of the charaters in s is not hex.
+            if len(request.GET['s']) == 16 and not [x for x in request.GET['s'] if not x in string.hexdigits]:
+                isValid = True
+            else:
+                isvalid = False
+
+            if isValid:
                 toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
                 toDelete.delete()
 
