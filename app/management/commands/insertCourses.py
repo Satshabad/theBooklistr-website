@@ -2,21 +2,15 @@
 # into the app_course table.
 
 from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 import pickle
 from app.models import Section
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
 
-    help = "Whatever you want to print here"
+    def handle(self, *args, **options):
+		data = pickle.load(open(str(args[0])))
 
-    option_list = NoArgsCommand.option_list + (
-        make_option('--verbose', action='store_true'),
-    )
-
-    def handle_noargs(self, **options):
-		data = pickle.load(open('courseData.txt'))
-		option_list = NoArgsCommand.option_list + (make_option('--verbose', action='store_true'),)
 
 		for dept in data:
 			for courses in dept['courses']:
