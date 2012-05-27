@@ -5,7 +5,8 @@ class Section(models.Model):
     courseName = models.CharField(max_length=30) # ex. CS 241.
     sectionID = models.CharField(max_length=30, primary_key=True)
     sectionName = models.CharField(max_length=20) # E-01
-    instructor = models.CharField(max_length=50)
+    instructor = models.CharField(max_length=150)
+    quarterName = models.CharField(max_length=150)
 
 #class Book(models.Model):
 #    going to be looking for book via courseName and sectionName
