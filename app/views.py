@@ -131,11 +131,11 @@ def search(request):
             #correctBooks = Section.objects.filter(courseName = request.GET['q'])
 
             # VALIDATE
-            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None \
-                or re.match(r'^\d{1,30}$', request.GET['s']) is None:
+            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
+
+            if m is None or re.match(r'^\d{1,30}$', request.GET['s']) is None:
                 # The user has submitted an irregular section id or course name
                 message = "Sorry, we couldn't find what you were looking for."
-
                 c = RequestContext(request, {'message':message})
                 return render_to_response('search.html', c)
 
@@ -203,13 +203,14 @@ def search(request):
         elif  'q' in request.GET and request.GET['q']:
 
             # VALIDATE
-            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
-                # The user has submitted an irregular course name
-                message = "Sorry, we couldn't find what you were looking for."
+            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
 
+            if m is None is None:
+                # The user has submitted an irregular section id or course name
+                message = "Sorry, we couldn't find what you were looking for."
                 c = RequestContext(request, {'message':message})
                 return render_to_response('search.html', c)
-
+            
             # query the database for the courses with the name requested in q
             sections = Section.objects.filter(courseName = request.GET['q'])
 
