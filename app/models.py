@@ -36,7 +36,7 @@ class Book(models.Model):
     isbn = models.CharField(max_length=30)
     sectionID = models.CharField(max_length=30)
     required = models.CharField(max_length=50, null=True)
-    broncoPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    broncoPrice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     author = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
     edition = models.CharField(max_length=4, null=True)
