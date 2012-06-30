@@ -11,7 +11,11 @@
 	</div>
 </div>
 </br>
+{% ifequal forloop.counter 1 %}
 <div id="{{forloop.counter}}" class="collapse in">
+{% else %}
+<div id="{{forloop.counter}}" class="collapse">
+{% endifequal %}
 	{% for section in quarter.sections %}
 	<div class = "row well">
 		<div class = "span11">

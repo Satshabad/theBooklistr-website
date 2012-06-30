@@ -114,8 +114,6 @@ def delete(request):
         return render_to_response("titleandmessage.html", c)
 
 
-# Needed by search(request) 
-# returns a List of quarters with section numbers and their course numbers.
 def selectSection(request):
     if  'q' in request.GET and request.GET['q']:
         # VALIDATE
@@ -127,13 +125,17 @@ def selectSection(request):
         quarters = list(Section.objects.values('quarterName').distinct())
 
 
-        # put all the courses in their approprtate quarter contatiners. 
-        # We get : [{'courses': [<Section: Section object>, <Section: Section object>], 
+        # put all the courses in their approprtate quarter contatiners. We get : [{'courses': [<Section: Section object>, <Section: Section object>], 
         #'quarterName': u'SUMMER 2012'},{'courses': [<Section: Section object>], 'quarterName': u'FALL 2012'}]
         for quarter in quarters:
             quarter['sections'] = Section.objects.filter(courseName=request.GET['q'],
                 quarterName=quarter['quarterName'])
-        return quarters
+
+
+        # pass the section to the user and the course they selected
+        # so it can passed back to us later
+        c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['q']})
+        return render_to_response('search-selection.html', c)
 
 
 @csrf_protect
@@ -199,7 +201,6 @@ def search(request):
                     newprice = item.find('lowestnewprice').find('formattedprice').text
                     book['amazon']['newprice'] = newprice
 
-
             # return the search results and a form for them to contact the seller
             form = ContactSellerForm()
             c = RequestContext(request, {'books': returnBooks, 'form': form})
@@ -221,13 +222,8 @@ def search(request):
                 c = RequestContext(request, {'message':message})
                 return render_to_response('search.html', c)
             
-
-            # Query the database for courses offered by quarters and their respective sections  
-            quarters = selectSection(request)
-
-            c = RequestContext(request, {'coursename':request.GET['q'], 'quarters':quarters})
-
-            return render_to_response('search-selection.html', c)
+            # Find the sections offered for this course seperated by quarters
+            return selectSection(request)
 
         else:
             # The user has not submitted any relevent data, or no data.
