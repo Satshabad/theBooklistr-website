@@ -10,62 +10,59 @@ class Command(BaseCommand):
 
     help = "pass in a file with the pickled data to insert"
     
-    @transaction.commit_manually
     def handle(self, *args, **options):
-        try:
 
-            data = pickle.load(open(str(args[0])))
-            Section.objects.all().delete()
-            Book.objects.all().delete()
-            for quarter in data:
-                for dept in quarter['departments']:
-                    for courses in dept['courses']:
-                        newCourseName = courses['name']
 
-                        for section in courses['sections']:
-                            newSectionName = section['name']
-                            newSectionID = section['id']
+        data = pickle.load(open(str(args[0])))
+        Section.objects.all().delete()
+        Book.objects.all().delete()
+        i = 0
+        for quarter in data:
+            for dept in quarter['departments']:
+                for courses in dept['courses']:
+                    newCourseName = courses['name']
 
-                            for book in section['books']:
-                                newISBN = book['ISBN']
-                                newAuthor = book['author']
-                                newBinding = book['binding']
-                                newPrice = book['broncoListPrice']
-                                newEdition = book['edition']
-                                newRequired = book['isRequired']
-                                newtitle = book['title']
+                    for section in courses['sections']:
+                        newSectionName = section['name']
+                        newSectionID = section['id']
 
-                                newBook = Book(
-                                    isbn = newISBN,
-                                    sectionID = newSectionID,
-                                    required = newRequired,
-                                    broncoPrice = newPrice,
-                                    author = newAuthor,
-                                    edition = newEdition,
-                                    binding = newBinding,
-                                    title = newtitle
-                                )
-                                newBook.save()
-                                print newBook
-                            
-            for quarter in data:
-                for dept in quarter['departments']:
-                    for courses in dept['courses']:
-                        newCourseName = courses['name']
-                        for section in courses['sections']:
-                            newSectionID = section['id']
-                            newSectionName = section['name']
-                            newInstructor = section['instructor']
-                            newQuartername = quarter['name']
-                            newCourse = Section(
-                                quarterName = newQuartername, 
-                                courseName = newCourseName, 
-                                sectionID = newSectionID, 
-                                sectionName = newSectionName, 
-                                instructor = newInstructor)
-                            newCourse.save()
-        except:
-            print 'uh oh something went wrong'
-            transaction.rollback()
-        else:
-            transaction.commit()
+                        for book in section['books']:
+                            newISBN = book['ISBN']
+                            newAuthor = book['author']
+                            newBinding = book['binding']
+                            newPrice = book['broncoListPrice']
+                            newEdition = book['edition']
+                            newRequired = book['isRequired']
+                            newtitle = book['title']
+
+                            newBook = Book(
+                                isbn = newISBN,
+                                sectionID = newSectionID,
+                                required = newRequired,
+                                broncoPrice = newPrice,
+                                author = newAuthor,
+                                edition = newEdition,
+                                binding = newBinding,
+                                title = newtitle
+                            )
+                            newBook.save()
+                            print i
+                            i +=1
+                        
+        for quarter in data:
+            for dept in quarter['departments']:
+                for courses in dept['courses']:
+                    newCourseName = courses['name']
+                    for section in courses['sections']:
+                        newSectionID = section['id']
+                        newSectionName = section['name']
+                        newInstructor = section['instructor']
+                        newQuartername = quarter['name']
+                        newCourse = Section(
+                            quarterName = newQuartername, 
+                            courseName = newCourseName, 
+                            sectionID = newSectionID, 
+                            sectionName = newSectionName, 
+                            instructor = newInstructor)
+                        newCourse.save()
+                        print newCourse
