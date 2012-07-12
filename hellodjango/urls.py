@@ -17,6 +17,8 @@ urlpatterns = patterns('',
 
     url(r'^$', 'app.views.search', name='search'),
     url(r'^calpoly$', 'app.views.search', name='search'),
+    url(r'^calpoly/feedback$', 'app.views.feedback', name='feedback'),
+    url(r'^calpoly/feedbackthanks$', 'app.views.feedbackThanks', name='feedbackThanks'),
     url(r'^calpoly/sell$', 'app.views.sell', name='sell'),
     url(r'^calpoly/search$', 'app.views.search', name='search'),
     url(r'^calpoly/thanks$', 'app.views.thanks', name='thanks'), 
