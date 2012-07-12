@@ -1,24 +1,18 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from forms import SellBookForm
 from forms import ContactSellerForm
 from django.views.decorators.csrf import csrf_protect
-from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from models import ListedBook
 from models import Book
 from models import Section
 import random
-import urllib
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
-from django.template.loader import get_template
-
-from django import template
-from django.template import Context
 import re
 import string
 
@@ -63,7 +57,7 @@ def sell(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-            return HttpResponseRedirect('/thanks')
+            return redirect('thanks')
 
         else:
             return render_to_response('sell.html', RequestContext(request, {'form': form}))
@@ -238,7 +232,7 @@ def contactseller(request):
 
         if  not 'postid' in request.POST:
             # if they did not submit a postid, which is automatic, then just redirect them to the home page.
-            return HttpResponseRedirect('/search')
+            return redirect('search')
 
         form = ContactSellerForm(request.POST)
         if form.is_valid():
@@ -252,7 +246,7 @@ def contactseller(request):
                 'noreply@theBooklistr.com', [listing[0].email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-            return HttpResponseRedirect('/message')
+            return redirect('message')
         else:
             return render_to_response('contactseller.html',
                 RequestContext(request, {'form': form, 'postid': request.POST['postid']}))
@@ -260,8 +254,21 @@ def contactseller(request):
     if request.method == "GET":
         if  not 'postid' in request.GET:
             # if they did not submit a postid, which is automatic, then just redirect them to the home page.
-            return HttpResponseRedirect('/search')
+            return redirect('search')
 
         form = ContactSellerForm()
         c = RequestContext(request, {'form': form, 'postid': request.GET['postid']})
         return render_to_response("contactseller.html", c)
+
+def feedback(request):
+    form = FeedbackForm(request.POST)
+    if form.is_valid():
+        message = form.cleaned_data['message']
+        email = form.cleaned_data['email']
+        send_mail('feedback', message, email, ['satshabad@thebooklistr.com'], fail_silently=True)
+        return redirect('search')
+    else:
+        pagename = 'Feedback Sent'
+        title = 'Your feedback has been sent'
+        message = 'Thanks for your input, we\'ll get back to you soon.'
+        return render_to_response("titleandmessage.html", {'pagename': pagename, 'title': title, 'message': message})
