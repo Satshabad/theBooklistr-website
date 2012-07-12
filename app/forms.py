@@ -26,6 +26,6 @@ class ContactSellerForm(forms.Form):
     message = forms.CharField (widget=forms.widgets.Textarea(),  label='Send a message to the seller:')
     
 class FeedbackForm(forms.Form):
-    email = forms.EmailField(label="Enter your email if you would like a response:")
-    message = forms.CharField (widget=forms.widgets.Textarea(),  label='Send us a message:', required=True)
+    email = forms.EmailField(label="Email (optional)",required=False )
+    message = forms.CharField (widget=forms.widgets.Textarea(),  label='Message', required=True)
     
