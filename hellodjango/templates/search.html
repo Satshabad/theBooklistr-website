@@ -107,7 +107,7 @@
 						<div class="span3">
 							<h3>{{ post.condition }}</h3>
 						</div>
-						<form method="GET" action="/contactseller">
+						<form method="GET" action="{% url app.views.contactseller %}">
 							<div class="span3">
 								<input class="btn btn-primary btn-large" type="submit" value="Contact Seller">
 							</div>

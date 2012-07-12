@@ -14,7 +14,7 @@
 					<br>If anyone wants to buy your book, we'll email you with their contact information. We never reveal your email address to anyone.
 				<p>
 			</div>
-			<form method="POST" action="/sell">
+			<form method="POST" action="{% url app.views.sell %}">
 				{% csrf_token %}
 				<div class="span3">
 					{% if form.errors %}
