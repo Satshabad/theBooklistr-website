@@ -1,3 +1,4 @@
+{% load bootstrap %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -47,14 +48,24 @@
               <h3>Send us a Message</h3>
             </div>
             <div class="modal-body">
+            <form method="POST" action="{% url app.views.feedback %}">
+				{% csrf_token %}
+				<div class="span3">
+					{% if feedbackform.errors %}
+					<p style="color: red;">
+						Please correct the error{{ feedbackform.errors|pluralize }} below.
+					</p>
+					{% endif %}
 
-              
+					{{ feedbackform|bootstrap }}
+				</div>
             </div>
             <div class="modal-footer">
               <a href="#" class="btn" data-dismiss="modal" >Cancel</a>
-              <a href="#" class="btn btn-primary">Send</a>
+              <input class="btn btn-primary" type="submit" value="Send">
             </div>
-          </div>
+			</form>
+                        </div>
 		<div id="feedback">
 			<a href="#myModal" data-toggle="modal">Feedback</a>
 		</div>
