@@ -19,7 +19,7 @@
 	{% for section in quarter.sections %}
 	<div class = "row well">
 		<div class = "span11">
-			<h2><a href="{% url app.views.search %}?s={{ section.sectionID }}&q={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
+			<h2><a href="{% url app.views.search %}?param_sectionID={{ section.sectionID }}&param_coursename={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
 		</div>
 	</div>
 	{% endfor %}
