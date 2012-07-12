@@ -2,8 +2,10 @@ from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from forms import SellBookForm
 from forms import ContactSellerForm
+from forms import FeedbackForm
 from django.views.decorators.csrf import csrf_protect
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from models import ListedBook
 from models import Book
 from models import Section
@@ -41,7 +43,7 @@ def sell(request):
             # insert the new listing into the database
             listing.save()
             html_content = render_to_string('successpostingemail.html',
-                    {'deleteLink': 'www.thebooklistr.com/delete?s=' + secretKey})
+                    {'deleteLink': 'www.thebooklistr.com'+reverse('delete')+'?s=' + secretKey})
             text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
 
             msg = EmailMultiAlternatives('Your book has been posted', text_content, 'noreply@theBooklistr.com',
@@ -52,17 +54,19 @@ def sell(request):
             return redirect('thanks')
 
         else:
-            return render_to_response('sell.html', RequestContext(request, {'form': form}))
+            feedbackform = FeedbackForm()
+            return render_to_response('sell.html', RequestContext(request, {'form': form, 'feedbackform':feedbackform}))
     form = SellBookForm()
-
-    return render_to_response('sell.html', RequestContext(request, {'form': form}))
+    feedbackform = FeedbackForm()
+    return render_to_response('sell.html', RequestContext(request, {'form': form, 'feedbackform':feedbackform}))
 
 
 def thanks(request):
     pagename = 'Thank you'
     title = 'Thanks for your listing'
     message = 'It should be posted in a just a few minutes. An email has been sent to you.'
-    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
+    feedbackform = FeedbackForm()
+    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message, 'feedbackform':feedbackform})
     return render_to_response("titleandmessage.html", c)
 
 
@@ -70,8 +74,10 @@ def messageSent(request):
     pagename = 'Message Sent'
     title = 'Your message has been sent'
     message = 'The seller now has your email address and may contact you'
-    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
+    feedbackform = FeedbackForm()
+    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message, 'feedbackform':feedbackform})
     return render_to_response("titleandmessage.html", c)
+
 
 
 def delete(request):
@@ -95,13 +101,16 @@ def delete(request):
 
                 except ListedBook.DoesNotExist:
                     pass
-
-        c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
+        feedbackform  = FeedbackForm()
+        c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message, 'feedbackform':feedbackform})
         return render_to_response("titleandmessage.html", c)
+
+
 
 
 @csrf_protect
 def search(request):
+
     # The user has submitted a get request
     if request.method == "GET":
 
@@ -118,10 +127,11 @@ def search(request):
         # The user has not submitted any relevent data, or no data.
         # - Render a default search page.
         else:
-            return render_to_response('search.html')
-
+            feedbackform = FeedbackForm()
+            return render_to_response('search.html', {'feedbackform': feedbackform})
 
 def _search_full_results_page(request):
+    feedbackform = FeedbackForm()
     '''
     This is a helper function to render the full results page. It should be called only when user has provided:
     'param_coursename' and 'param_sectionID'
@@ -157,12 +167,13 @@ def _search_full_results_page(request):
 
     # return the search results and a form for them to contact the seller
     form = ContactSellerForm()
-    c = RequestContext(request, {'books': returnBooks, 'form': form})
+    c = RequestContext(request, {'books': returnBooks, 'form': form, 'feedbackform':feedbackform})
 
     #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
     return render_to_response('search.html', c)
 
 def _search_section_results_page(request):
+    feedbackform = FeedbackForm()
 
     # VALIDATE
 
@@ -183,9 +194,8 @@ def _search_section_results_page(request):
 
     # pass the section to the user and the course they selected
     # so it can passed back to us later
-    c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['param_coursename']})
+    c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['param_coursename'], 'feedbackform':feedbackform})
     return render_to_response('search-section-selection.html', c)
-
 
 def contactseller(request):
     if request.method == "POST":
@@ -218,19 +228,27 @@ def contactseller(request):
             return redirect('search')
 
         form = ContactSellerForm()
-        c = RequestContext(request, {'form': form, 'postid': request.GET['postid']})
+        feedbackform = FeedbackForm()
+        c = RequestContext(request, {'form': form, 'postid': request.GET['postid'],'feedbackform':feedbackform})
         return render_to_response("contactseller.html", c)
 
 
+
+
+
+
 def feedback(request):
-    form = FeedbackForm(request.POST)
-    if form.is_valid():
-        message = form.cleaned_data['message']
-        email = form.cleaned_data['email']
-        send_mail('feedback', message, email, ['satshabad@thebooklistr.com'], fail_silently=True)
+    feedbackform = FeedbackForm(request.POST)
+    if not feedbackform.is_valid():
         return redirect('search')
     else:
-        pagename = 'Feedback Sent'
-        title = 'Your feedback has been sent'
-        message = 'Thanks for your input, we\'ll get back to you soon.'
-        return render_to_response("titleandmessage.html", {'pagename': pagename, 'title': title, 'message': message})
+        message = feedbackform.cleaned_data['message']
+        email = feedbackform.cleaned_data['email']
+        send_mail('feedback', message, email, ['satshabad@thebooklistr.com'], fail_silently=True)
+        return redirect('feedbackThanks')
+
+def feedbackThanks(request):
+    pagename = 'Feedback Sent'
+    title = 'Your feedback has been sent'
+    message = 'Thanks for your input, we\'ll get back to you soon.'
+    return render_to_response("titleandmessage.html", {'pagename': pagename, 'title': title, 'message': message})
