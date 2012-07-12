@@ -100,101 +100,91 @@ def delete(request):
         return render_to_response("titleandmessage.html", c)
 
 
-def selectSection(request):
-    if  'q' in request.GET and request.GET['q']:
-        # VALIDATE
-        if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
-            # The user has submitted an irregular course name
-            return render_to_response('search.html')
-
-        # get an object like [{'quarterName': u'SUMMER 2012'}, {'quarterName': u'FALL 2012'}] to have all the quarter names in them
-        quarters = list(Section.objects.values('quarterName').distinct())
-
-
-        # put all the courses in their approprtate quarter contatiners. We get : [{'courses': [<Section: Section object>, <Section: Section object>], 
-        #'quarterName': u'SUMMER 2012'},{'courses': [<Section: Section object>], 'quarterName': u'FALL 2012'}]
-        for quarter in quarters:
-            quarter['sections'] = Section.objects.filter(courseName=request.GET['q'],
-                quarterName=quarter['quarterName'])
-
-
-        # pass the section to the user and the course they selected
-        # so it can passed back to us later
-        c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['q']})
-        return render_to_response('search-selection.html', c)
-
-
 @csrf_protect
 def search(request):
     # The user has submitted a get request
     if request.method == "GET":
 
-    #############
-    # The user has selected a course and a section.
-    # - Provide the books that are listed for that course and section.
-    #############
-        if  's' in request.GET and 'q' in request.GET:
-            #  retrieve the list of books that correspond to a Course and Section
-            #correctBooks = Section.objects.filter(courseName = request.GET['q'])
+        # The user has selected a course and a section.
+        # - Provide the books that are listed for that course and section.
+        if  'param_sectionID' in request.GET and 'param_coursename' in request.GET:
+            return _search_full_results_page(request)
 
-            # VALIDATE
-
-            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
-
-            if m is None or re.match(r'^\d{1,30}$', request.GET['s']) is None:
-                # The user has submitted an irregular section id or course name
-                message = "Sorry, we couldn't find what you were looking for."
-                c = RequestContext(request, {'message':message})
-                return render_to_response('search.html', c)
-
-            # go through the list of books and find the listings
-            books2 = Book.objects.filter(sectionID=request.GET['s'])
-
-            returnBooks = []
-            for dbBook in books2:
-                newBook = {'title': dbBook.title, 'author': dbBook.author, 'isRequired': dbBook.required,
-                           'isbn': dbBook.isbn, 'listings': []}
-                listings = ListedBook.objects.filter(isbn=newBook['isbn'])
-                newBook['listings'] = listings
-                returnBooks.append(newBook)
-
-
-
-
-            # get the amazon info for the books
-
-            for book in returnBooks:
-                book['amazon'] = amazonwrapper.getBookInfoByIsbn(book['isbn'])
-
-            # return the search results and a form for them to contact the seller
-            form = ContactSellerForm()
-            c = RequestContext(request, {'books': returnBooks, 'form': form})
-
-            #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
-            return render_to_response('search.html', c)
-
-        #############
         # The user has only entered a courseName (i.e. CS240)
         #   -- List the sections of that course
-        #############
-        elif  'q' in request.GET and request.GET['q']:
-            # VALIDATE
-            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
+        elif  'param_coursename' in request.GET and request.GET['param_coursename']:
+            return _search_section_results_page(request)
 
-            if m is None is None:
-                # The user has submitted an irregular section id or course name
-                message = "Sorry, we couldn't find what you were looking for."
-                c = RequestContext(request, {'message':message})
-                return render_to_response('search.html', c)
-            
-            # Find the sections offered for this course seperated by quarters
-            return selectSection(request)
-
+        # The user has not submitted any relevent data, or no data.
+        # - Render a default search page.
         else:
-            # The user has not submitted any relevent data, or no data.
-            # - Render a default search page.
-
             return render_to_response('search.html')
+
+
+def _search_full_results_page(request):
+    '''
+    This is a helper function to render the full results page. It should be called only when user has provided:
+    'param_coursename' and 'param_sectionID'
+    '''
+    #  retrieve the list of books that correspond to a Course and Section
+    #correctBooks = Section.objects.filter(courseName = request.GET['param_coursename'])
+
+    # VALIDATE
+
+    m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['param_coursename'])
+
+    if m is None or re.match(r'^\d{1,30}$', request.GET['param_sectionID']) is None:
+        # The user has submitted an irregular section id or course name
+        message = "Sorry, we couldn't find what you were looking for."
+        c = RequestContext(request, {'message': message})
+        return render_to_response('search.html', c)
+
+    # go through the list of books and find the listings
+    books2 = Book.objects.filter(sectionID=request.GET['param_sectionID'])
+
+    returnBooks = []
+    for dbBook in books2:
+        newBook = {'title': dbBook.title, 'author': dbBook.author, 'isRequired': dbBook.required,
+                   'isbn': dbBook.isbn, 'listings': []}
+        listings = ListedBook.objects.filter(isbn=newBook['isbn'])
+        newBook['listings'] = listings
+        returnBooks.append(newBook)
+
+    # get the amazon info for the books
+
+    for book in returnBooks:
+        book['amazon'] = amazonwrapper.getBookInfoByIsbn(book['isbn'])
+
+    # return the search results and a form for them to contact the seller
+    form = ContactSellerForm()
+    c = RequestContext(request, {'books': returnBooks, 'form': form})
+
+    #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
+    return render_to_response('search.html', c)
+
+def _search_section_results_page(request):
+
+    # VALIDATE
+
+    if re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['param_coursename']) is None:
+        # The user has submitted an irregular section id or course name
+        message = "Sorry, we couldn't find what you were looking for."
+        c = RequestContext(request, {'message': message})
+        return render_to_response('search.html', c)
+
+    # get an object like [{'quarterName': u'SUMMER 2012'}, {'quarterName': u'FALL 2012'}] to have all the quarter names in them
+    quarters = list(Section.objects.values('quarterName').distinct())
+
+    # put all the courses in their approprtate quarter contatiners. We get : [{'courses': [<Section: Section object>, <Section: Section object>],
+    #'quarterName': u'SUMMER 2012'},{'courses': [<Section: Section object>], 'quarterName': u'FALL 2012'}]
+    for quarter in quarters:
+        quarter['sections'] = Section.objects.filter(courseName=request.GET['param_coursename'],
+            quarterName=quarter['quarterName'])
+
+    # pass the section to the user and the course they selected
+    # so it can passed back to us later
+    c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['param_coursename']})
+    return render_to_response('search-section-selection.html', c)
 
 
 def contactseller(request):
@@ -230,6 +220,7 @@ def contactseller(request):
         form = ContactSellerForm()
         c = RequestContext(request, {'form': form, 'postid': request.GET['postid']})
         return render_to_response("contactseller.html", c)
+
 
 def feedback(request):
     form = FeedbackForm(request.POST)
