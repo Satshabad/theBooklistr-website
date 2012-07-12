@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from models import ListedBook
 from models import Book
 from models import Section
+import amazonwrapper
 import random
 
 from django.core.mail import EmailMultiAlternatives
@@ -15,15 +16,6 @@ from django.utils.html import strip_tags
 
 import re
 import string
-
-# for amazon calls
-from amazonify import amazonify
-import BeautifulSoup
-import bottlenose
-
-AMAZON_API_KEY = 'AKIAI75ZQQCZ726SSJDA'
-AMAZON_SECRET_KEY = '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'
-AMAZON_ASSOC_TAG = 'books0ae3-20'
 
 # include this decorator on all post request view functions
 @csrf_protect
@@ -155,6 +147,7 @@ def search(request):
                 c = RequestContext(request, {'message':message})
                 return render_to_response('search.html', c)
 
+            # go through the list of books and find the listings
             books2 = Book.objects.filter(sectionID=request.GET['s'])
 
             returnBooks = []
@@ -166,34 +159,12 @@ def search(request):
                 returnBooks.append(newBook)
 
 
-            # go through the list of books and find the listings
 
 
-            # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
-            amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
+            # get the amazon info for the books
 
             for book in returnBooks:
-                # Do this for each book.
-                book['amazon'] = {}
-                response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''),
-                    ResponseGroup="ItemAttributes, Offers ", SearchIndex="Books", IdType="ISBN")
-                soup = BeautifulSoup.BeautifulSoup(response)
-
-
-                # check to see that response exists
-                if not soup.find('items').findAll('item'):
-                    continue
-
-                for item in soup.find('items').findAll('item'):
-                    if not(item.find('detailpageurl') and item.find('lowestusedprice') and item.find('lowestnewprice')):
-                        continue
-                    link = item.find('detailpageurl').text
-                    reflink = amazonify(link, AMAZON_ASSOC_TAG)
-                    book['amazon']['link'] = reflink
-                    usedprice = item.find('lowestusedprice').find('formattedprice').text
-                    book['amazon']['usedprice'] = usedprice
-                    newprice = item.find('lowestnewprice').find('formattedprice').text
-                    book['amazon']['newprice'] = newprice
+                book['amazon'] = amazonwrapper.getBookInfoByIsbn(book['isbn'])
 
             # return the search results and a form for them to contact the seller
             form = ContactSellerForm()
