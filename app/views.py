@@ -41,47 +41,52 @@ def sell(request):
             form_email = form.cleaned_data['email']
             form_price = form.cleaned_data['price']
             form_condition = form.cleaned_data['condition']
-            
+
             # A random 16 digit hex number
             secretKey = ''.join(random.choice(string.hexdigits) for n in xrange(16))
-            
+
             listing = ListedBook(
-                secret_key = secretKey,
-                isbn = form_isbn,
-                email = form_email,
-                price = form_price,
-                condition = form_condition)
+                secret_key=secretKey,
+                isbn=form_isbn,
+                email=form_email,
+                price=form_price,
+                condition=form_condition)
             secretKey = str(secretKey)
             # insert the new listing into the database
             listing.save()
-            html_content = render_to_string('successpostingemail.html', {'deleteLink':'www.thebooklistr.com/delete?s='+secretKey})
+            html_content = render_to_string('successpostingemail.html',
+                    {'deleteLink': 'www.thebooklistr.com/delete?s=' + secretKey})
             text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
 
-            msg = EmailMultiAlternatives('Your book has been posted', text_content, 'noreply@theBooklistr.com', [form_email])
+            msg = EmailMultiAlternatives('Your book has been posted', text_content, 'noreply@theBooklistr.com',
+                [form_email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-         
+
             return HttpResponseRedirect('/thanks')
 
         else:
-            return render_to_response('sell.html', RequestContext(request,  {'form':form}))
+            return render_to_response('sell.html', RequestContext(request, {'form': form}))
     form = SellBookForm()
 
-    return render_to_response('sell.html', RequestContext(request,  {'form':form}))
+    return render_to_response('sell.html', RequestContext(request, {'form': form}))
+
 
 def thanks(request):
     pagename = 'Thank you'
     title = 'Thanks for your listing'
     message = 'It should be posted in a just a few minutes. An email has been sent to you.'
-    c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message} )
+    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
     return render_to_response("titleandmessage.html", c)
+
 
 def messageSent(request):
     pagename = 'Message Sent'
     title = 'Your message has been sent'
     message = 'The seller now has your email address and may contact you'
-    c = RequestContext(request, { 'pagename':pagename, 'title':title,  'message':message} )
+    c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
     return render_to_response("titleandmessage.html", c)
+
 
 def delete(request):
     if request.method == 'GET':
@@ -89,8 +94,6 @@ def delete(request):
         title = 'Uh Oh'
         message = 'Sorry, that did not compute'
         if 's' in request.GET:
-
-
             isValid = False
             # a little trick here. If the list is not empty then at
             # least one of the charaters in s is not hex.
@@ -99,7 +102,6 @@ def delete(request):
 
             if isValid:
                 try:
-
                     toDelete = ListedBook.objects.get(secret_key=request.GET['s'])
                     toDelete.delete()
                     title = 'Post deleted'
@@ -108,39 +110,65 @@ def delete(request):
                 except ListedBook.DoesNotExist:
                     pass
 
-
-        c = RequestContext(request, {'pagename':pagename, 'title':title,  'message':message})
+        c = RequestContext(request, {'pagename': pagename, 'title': title, 'message': message})
         return render_to_response("titleandmessage.html", c)
 
 
+def selectSection(request):
+    if  'q' in request.GET and request.GET['q']:
+        # VALIDATE
+        if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
+            # The user has submitted an irregular course name
+            return render_to_response('search.html')
+
+        # get an object like [{'quarterName': u'SUMMER 2012'}, {'quarterName': u'FALL 2012'}] to have all the quarter names in them
+        quarters = list(Section.objects.values('quarterName').distinct())
+
+
+        # put all the courses in their approprtate quarter contatiners. We get : [{'courses': [<Section: Section object>, <Section: Section object>], 
+        #'quarterName': u'SUMMER 2012'},{'courses': [<Section: Section object>], 'quarterName': u'FALL 2012'}]
+        for quarter in quarters:
+            quarter['sections'] = Section.objects.filter(courseName=request.GET['q'],
+                quarterName=quarter['quarterName'])
+        print quarters
+
+
+        # pass the section to the user and the course they selected
+        # so it can passed back to us later
+
+        c = RequestContext(request, {'quarters': quarters, 'coursename': request.GET['q']})
+        return render_to_response('search-selection.html', c)
 
 
 @csrf_protect
 def search(request):
-
     # The user has submitted a get request
     if request.method == "GET":
 
-		#############
-        # The user has selected a course and a section.
-		# - Provide the books that are listed for that course and section.
-		#############
+    #############
+    # The user has selected a course and a section.
+    # - Provide the books that are listed for that course and section.
+    #############
         if  's' in request.GET and 'q' in request.GET:
-
             #  retrieve the list of books that correspond to a Course and Section
             #correctBooks = Section.objects.filter(courseName = request.GET['q'])
 
             # VALIDATE
-            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None \
-                or re.match(r'^\d{1,30}$', request.GET['s']) is None:
+
+            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
+
+            if m is None or re.match(r'^\d{1,30}$', request.GET['s']) is None:
                 # The user has submitted an irregular section id or course name
-                return render_to_response('search.html')
+                message = "Sorry, we couldn't find what you were looking for."
+                c = RequestContext(request, {'message':message})
+                return render_to_response('search.html', c)
 
             books2 = Book.objects.filter(sectionID=request.GET['s'])
 
             returnBooks = []
             for dbBook in books2:
-                newBook = {'title':dbBook.title, 'author':dbBook.author, 'isRequired':dbBook.required, 'isbn':dbBook.isbn, 'listings':[]}
+                newBook = {'title': dbBook.title, 'author': dbBook.author, 'isRequired': dbBook.required,
+                           'isbn': dbBook.isbn, 'listings': []}
                 listings = ListedBook.objects.filter(isbn=newBook['isbn'])
                 newBook['listings'] = listings
                 returnBooks.append(newBook)
@@ -149,22 +177,14 @@ def search(request):
             # go through the list of books and find the listings
 
 
-            # TEST DATA. USE QUERIES INSTEAD HERE
- #           books = [{'title':'Call of the Wild', 'author':'Jack London',
-#                    'ReqOrOpt':'Required','isbn': '0-13-110362-8',  'listings':[]},  {'title':'The C Programming Language', 'author':'Brian W. Kernighan',
-  #                  'ReqOrOpt':'Required','isbn': '123-456-7890',  'listings':[]}]
-#            posting = [{'id':'1', 'condition':'Great', 'price':'10.00'},  {'id':'2','condition':'OK', 'price':'13.00'},  {'id':'3','condition':'Bad', 'price':'100.00'},  {'id':'4', 'condition':'Sweet', 'price':'12.00'},  {'id':'5', 'condition':'Meh', 'price':'11.00'}]
-           # books[0]['listings'] = posting
-           # books[1]['listings'] = posting
-
-
             # HERE WE LOOK UP THE AMAZON PAGE AND PRICE FOR EACH BOOK
-            amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY,  AMAZON_ASSOC_TAG )
+            amazon = bottlenose.Amazon(AMAZON_API_KEY, AMAZON_SECRET_KEY, AMAZON_ASSOC_TAG)
 
             for book in returnBooks:
                 # Do this for each book.
                 book['amazon'] = {}
-                response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''), ResponseGroup="ItemAttributes, Offers ",SearchIndex="Books", IdType="ISBN")
+                response = amazon.ItemLookup(ItemId=book['isbn'].replace('-', ''),
+                    ResponseGroup="ItemAttributes, Offers ", SearchIndex="Books", IdType="ISBN")
                 soup = BeautifulSoup.BeautifulSoup(response)
 
 
@@ -176,34 +196,37 @@ def search(request):
                     if not(item.find('detailpageurl') and item.find('lowestusedprice') and item.find('lowestnewprice')):
                         continue
                     link = item.find('detailpageurl').text
-                    reflink = amazonify(link,  AMAZON_ASSOC_TAG)
+                    reflink = amazonify(link, AMAZON_ASSOC_TAG)
                     book['amazon']['link'] = reflink
                     usedprice = item.find('lowestusedprice').find('formattedprice').text
                     book['amazon']['usedprice'] = usedprice
                     newprice = item.find('lowestnewprice').find('formattedprice').text
                     book['amazon']['newprice'] = newprice
-            # end test data
+                # end test data
 
 
 
             # return the search results and a form for them to contact the seller
             form = ContactSellerForm()
-            c = RequestContext(request, {'books':returnBooks, 'form':form})
+            c = RequestContext(request, {'books': returnBooks, 'form': form})
 
             #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
             return render_to_response('search.html', c)
 
-		#############
+        #############
         # The user has only entered a courseName (i.e. CS240)
         #   -- List the sections of that course
-		#############
+        #############
         elif  'q' in request.GET and request.GET['q']:
-
             # VALIDATE
-            if re.match(r'^\w{1,5}\s*\d{3}$', request.GET['q']) is None:
-                # The user has submitted an irregular course name
-                return render_to_response('search.html')
+            m = re.match(r'^[a-zA-Z]{1,5}\d{3}$', request.GET['q'])
 
+            if m is None is None:
+                # The user has submitted an irregular section id or course name
+                message = "Sorry, we couldn't find what you were looking for."
+                c = RequestContext(request, {'message':message})
+                return render_to_response('search.html', c)
+            
             # query the database for the courses with the name requested in q
             sections = Section.objects.filter(courseName = request.GET['q'])
 
@@ -211,7 +234,6 @@ def search(request):
             # so it can passed back to us later
 
             c = RequestContext(request, {'sections' : sections, 'coursename':request.GET['q']})
-            return render_to_response('search-selection.html', c)
 
         else:
             # The user has not submitted any relevent data, or no data.
@@ -219,8 +241,8 @@ def search(request):
 
             return render_to_response('search.html')
 
-def contactseller(request):
 
+def contactseller(request):
     if request.method == "POST":
         # The user has submitted a post request
 
@@ -230,20 +252,20 @@ def contactseller(request):
 
         form = ContactSellerForm(request.POST)
         if form.is_valid():
-
-
             message = form.cleaned_data['message']
             email = form.cleaned_data['email']
-            html_content = render_to_string('contactselleremail.html', {'message':message, 'email': email})
+            html_content = render_to_string('contactselleremail.html', {'message': message, 'email': email})
             text_content = strip_tags(html_content) # this strips the html, so people will have the text as well.
             listing = ListedBook.objects.filter(id=request.POST['postid'])
 
-            msg = EmailMultiAlternatives('Someone from Booklistr wants to by your book', text_content, 'noreply@theBooklistr.com', [listing[0].email])
+            msg = EmailMultiAlternatives('Someone from Booklistr wants to by your book', text_content,
+                'noreply@theBooklistr.com', [listing[0].email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
             return HttpResponseRedirect('/message')
         else:
-            return render_to_response('contactseller.html', RequestContext(request,  {'form':form, 'postid': request.POST['postid']}))
+            return render_to_response('contactseller.html',
+                RequestContext(request, {'form': form, 'postid': request.POST['postid']}))
 
     if request.method == "GET":
         if  not 'postid' in request.GET:
@@ -251,7 +273,7 @@ def contactseller(request):
             return HttpResponseRedirect('/search')
 
         form = ContactSellerForm()
-        c = RequestContext(request,  {'form':form,  'postid':request.GET['postid']})
+        c = RequestContext(request, {'form': form, 'postid': request.GET['postid']})
         return render_to_response("contactseller.html", c)
 def goog(request):
     return render_to_response("google906daeabdf21c107.html", {})

@@ -1,18 +1,29 @@
 {% extends "searchbase.html" %}
 {% block content %}
-{% if sections %}
-    <hr>
-    <h1>Select your section</h1>
-    {% for section in sections %}
-        <div class = "row well">
-            <div class = "span11">    
-                <h2><a href="/search?s={{ section.sectionID }}&q={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
-                    
-            </div>
-        </div>
-    {% endfor %}
-    
+
+{% if quarters %}
+
+{% for quarter in quarters %}
+{% if quarter.sections %}
+<div class = "row">
+	<div class = "span3">
+		<a data-toggle="collapse" class='btn' data-target="#{{forloop.counter}}"  rel="popover"><h1> {{quarter.quarterName}}</h1> </a>
+	</div>
+</div>
+</br>
+<div id="{{forloop.counter}}" class="collapse in">
+	{% for section in quarter.sections %}
+	<div class = "row well">
+		<div class = "span11">
+			<h2><a href="/search?s={{ section.sectionID }}&q={{ coursename }}">{{ section.sectionName }} - {{ section.instructor }}</a></h2>
+		</div>
+	</div>
+	{% endfor %}
+</div>
 {% endif %}
-   
-    <hr>
-    {% endblock %}
+</br>
+{% endfor %}
+
+{% endif %}
+
+{% endblock %}

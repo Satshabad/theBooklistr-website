@@ -6,41 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- Le styles -->
 		<link href="../static/css/bootstrap.css" rel="stylesheet">
-		<style type="text/css">
-			body {
-				padding-top: 60px;
-				padding-bottom: 40px;
-			}
-			#search #search-area #search-box button {
-				height: 58px;
-				width: 96px;
-			}
-			#search #search-area #search-box input {
-				height: 48px;
-				line-height: 1.5;
-				font-size: 36px;
-			}
-			.visuallyhidden {
-				height: 1px;
-				width: 1px;
-				margin: -1px;
-				padding: 0;
-				border: 0;
-				clip: rect(0 0 0 0);
-				position: absolute;
-				overflow: hidden;
-			}
-			#search #main-title {
-				margin-top: 30px;
-			}
-			#search #main-title h1 {
-				font-weight: 300;
-				font-size: 50px;
-				height: 100px;
-				line-height: 1;
-			}
-
-		</style>
+        <link href="../static/css/booklistr.css" rel="stylesheet">
 		<link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
 		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
@@ -91,6 +57,11 @@
 				<div id="main-title" class="span12">
 					<h1>Search for books by class</h1>
 				</div>
+                {% if message %}
+                <div id="message" class="span6 well">
+                    <h3 style="color:red;">{{ message }}</h3>
+                </div>
+                {% endif %}
 			</div>
         </div>
         <br>

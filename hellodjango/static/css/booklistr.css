@@ -1,0 +1,38 @@
+
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+#search #search-area #search-box button {
+    height: 58px;
+    width: 96px;
+}
+
+#search #search-area #search-box input {
+    height: 48px;
+    line-height: 1.5;
+    font-size: 36px;
+}
+
+.visuallyhidden {
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0 0 0 0);
+    position: absolute;
+    overflow: hidden;
+}
+
+#search #main-title {
+    margin-top: 30px;
+}
+
+#search #main-title h1 {
+    font-weight: 300;
+    font-size: 50px;
+    height: 100px;
+    line-height: 1;
+}
