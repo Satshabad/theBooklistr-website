@@ -14,15 +14,18 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^google906daeabdf21c107\.html$', 'app.views.goog', name='goog'),
-    
+
+    url(r'^google906daeabdf21c107\.html$', 'app.views.goog', name='goog'),    
     url(r'^$', 'app.views.search', name='search'),
-    url(r'^sell$', 'app.views.sell', name='sell'),
-    url(r'^search$', 'app.views.search', name='search'),
-    url(r'^thanks$', 'app.views.thanks', name='thanks'), 
-    url(r'^contactseller$', 'app.views.contactseller', name='contactseller'),
-    url(r'^delete$', 'app.views.delete', name='delete'), 
-    url(r'^message$', 'app.views.messageSent', name='messageSent')
+    url(r'^calpoly$', 'app.views.search', name='search'),
+    url(r'^calpoly/feedback$', 'app.views.feedback', name='feedback'),
+    url(r'^calpoly/feedbackthanks$', 'app.views.feedbackThanks', name='feedbackThanks'),
+    url(r'^calpoly/sell$', 'app.views.sell', name='sell'),
+    url(r'^calpoly/search$', 'app.views.search', name='search'),
+    url(r'^calpoly/thanks$', 'app.views.thanks', name='thanks'), 
+    url(r'^calpoly/contactseller$', 'app.views.contactseller', name='contactseller'),
+    url(r'^calpoly/delete$', 'app.views.delete', name='delete'), 
+    url(r'^calpoly/message$', 'app.views.messageSent', name='messageSent')
 )
 urlpatterns += patterns('',  
 (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': hellodjango.settings.STATIC_ROOT}),  

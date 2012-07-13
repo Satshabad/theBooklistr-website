@@ -6,9 +6,9 @@
 	<div class="hero-unit">
 		<div class="row">
 			<div class="span12">
-				<h1>Welcome to Cal Poly Book Listr</h1>
+				<h1>Welcome to The Book Listr</h1>
 				<p>
-					Search for your books by class above, or <a href="/sell" >post a book you want to sell</a>
+					Search for your books by class above, or <a href="{% url app.views.sell %}" >post a book you want to sell</a>
 				</p>
 			</div>
 			<hr>
@@ -107,7 +107,7 @@
 						<div class="span3">
 							<h3>{{ post.condition }}</h3>
 						</div>
-						<form method="GET" action="/contactseller">
+						<form method="GET" action="{% url app.views.contactseller %}">
 							<div class="span3">
 								<input class="btn btn-primary btn-large" type="submit" value="Contact Seller">
 							</div>
