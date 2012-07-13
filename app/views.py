@@ -253,3 +253,5 @@ def contactseller(request):
         form = ContactSellerForm()
         c = RequestContext(request,  {'form':form,  'postid':request.GET['postid']})
         return render_to_response("contactseller.html", c)
+def goog(request):
+    return render_to_response("google906daeabdf21c107.html", {})
