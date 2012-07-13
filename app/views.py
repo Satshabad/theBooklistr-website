@@ -233,9 +233,8 @@ def contactseller(request):
         return render_to_response("contactseller.html", c)
 
 
-
-
-
+def goog(request):
+    return render_to_response("google906daeabdf21c107.html", {})
 
 def feedback(request):
     feedbackform = FeedbackForm(request.POST)
