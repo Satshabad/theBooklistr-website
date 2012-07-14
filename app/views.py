@@ -165,9 +165,17 @@ def _search_full_results_page(request):
     for book in returnBooks:
         book['amazon'] = amazonwrapper.getBookInfoByIsbn(book['isbn'])
 
+    # Provide the user a message if this course has no textbooks
+    if not returnBooks:
+        message = "The textbooks for this section could not be found. " \
+            + "The instructor for this course may not have submitted a " \
+            + "textbook request yet, or may not be using a text. Please check back later."
+    else:
+        message = ""
+
     # return the search results and a form for them to contact the seller
     form = ContactSellerForm()
-    c = RequestContext(request, {'books': returnBooks, 'form': form, 'feedbackform':feedbackform})
+    c = RequestContext(request, {'books': returnBooks, 'form': form, 'feedbackform':feedbackform, 'message':message})
 
     #c = RequestContext(request, {'books' : correctBooks, 'form' : form})
     return render_to_response('search.html', c)

@@ -4,6 +4,10 @@ body {
     padding-bottom: 40px;
 }
 
+#message {
+    width:1127px;
+}
+
 #search #search-area #search-box button {
     height: 58px;
     width: 96px;
