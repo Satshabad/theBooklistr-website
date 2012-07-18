@@ -58,7 +58,7 @@
             </div>
 			</form>
                         </div>
-		<div id="feedback">
+		<div id="feedback" class="hidden-phone">
 			<a href="#myModal" data-toggle="modal">Feedback</a>
 		</div>
 		<div class="navbar navbar-fixed-top">
@@ -83,7 +83,8 @@
 		<div class="container">
 			<div class="row">
 				<div id="main-title" class="span12">
-					<h1>Search for books by class</h1>
+					<h1 class="hidden-phone">Search for books by class</h1>
+					<h3 class="hidden-desktop">Search for books by class</h1>
 				</div>
                 {% if message %}
                 <div id="message" class="span12 well">
@@ -95,7 +96,7 @@
         <br>
 
         <div class="container">
-			<div class="row">
+			<div class="row hidden-phone">
 				<div class="span12">
 					<div id="search-area">
 						<form class="form-search" method="GET" action="{% url app.views.search %}">
@@ -113,6 +114,25 @@
 					</div>
 				</div>
 			</div>
+            <div class="row hidden-desktop">
+				<div class="span12">
+					<div id="search-area">
+						<form class="form-search" method="GET" action="{% url app.views.search %}">
+							<div class="control-group">
+								<div class="controls">
+									<div id="search-box" class="input-append">
+										<input id="id_q" name="param_coursename" type="text" placeholder="i.e. CS241" class="span10">
+										<button class="btn btn-primary" type="submit">
+											<i class="icon-search"></i><span class="visuallyhidden">Search</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
 			<hr>
 			{% block content %}{% endblock %}
 			<hr>

@@ -1,4 +1,3 @@
-
 body {
     padding-top: 60px;
     padding-bottom: 40px;
@@ -8,15 +7,25 @@ body {
     width:1127px;
 }
 
-#search #search-area #search-box button {
+#search .hidden-phone #search-area #search-box button {
     height: 58px;
     width: 96px;
 }
 
-#search #search-area #search-box input {
+#search .hidden-phone #search-area #search-box input {
     height: 48px;
     line-height: 1.5;
     font-size: 36px;
+}
+
+#search .hidden-desktop #search-area #search-box button {
+    height: 30px;
+}
+
+#search .hidden-desktop #search-area #search-box input {
+    height: 24px;
+    line-height: 1;
+    width:280px;
 }
 
 .visuallyhidden {
