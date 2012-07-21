@@ -21,7 +21,8 @@
 	{% for book in books %}
 	<div class = "row well">
 		<div class = "span11">
-			<h2>{{ book.title }}</h2>
+			<h2 class="hidden-phone">{{ book.title }}</h2>
+			<h3 class="hidden-desktop">{{ book.title }}</h3>
 			<p>
 				Author: {{ book.author }}
 			</p>
@@ -38,7 +39,7 @@
 			</p>
 			{% endif %}
 			{% if book.amazon %}
-			<div class="container">
+			<div class="container hidden-phone">
 				<div class='row'>
 					<div class="span3">
 						<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3>
@@ -52,10 +53,12 @@
 				<div class="container">
 					<div class='row'>
 						<div class="span3">
-							<h3>{{book.amazon.usedprice}}</h3>
+                            <p class="hidden-desktop"><strong>Price: </strong>{{book.amazon.usedprice}}</p>
+							<h3 class="hidden-phone">{{book.amazon.usedprice}}</h3>
 						</div>
 						<div class="span3">
-							<h3>Used</h3>
+                            <p class="hidden-desktop"><strong>Condition: </strong>Used</p>
+							<h3 class="hidden-phone">Used</h3>
 						</div>
 						<div class="span3">
 							<a class="btn btn-primary btn-large" href="{{book.amazon.link}}"> Contact Seller</a>
@@ -70,11 +73,12 @@
 				<div class="container">
 					<div class='row'>
 						<div class="span3">
-							<h3>{{book.amazon.newprice}}</h3>
+                            <p class="hidden-desktop"><strong>Price: </strong>{{book.amazon.newprice}}</p>
+							<h3 class="hidden-phone">{{book.amazon.newprice}}</h3>
 						</div>
 						<div class="span3">
-							<h3>New</h3>
-						</div>
+                            <p class="hidden-desktop"><strong>Condition: </strong>Used</p>
+							<h3 class="hidden-phone">Used</h3>
 						<div class="span3">
 							<a class="btn btn-primary btn-large" href="{{book.amazon.link}}"> Contact Seller</a>
 						</div>
@@ -87,7 +91,7 @@
 			{% endif %}
 			{% if book.listings %}
 			{% if not book.amazon %}
-			<div class="container">
+			<div class="container hidden-phone">
 				<div class='row'>
 					<div class="span3">
 						<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price</h3>
@@ -103,10 +107,12 @@
 				<div class="container">
 					<div class='row'>
 						<div class="span3">
-							<h3>${{ post.price }}</h3>
+                            <p class="hidden-desktop"><strong>Price: </strong>${{ post.price }}</p>
+							<h3 class="hidden-phone">${{ post.price }}</h3>
 						</div>
 						<div class="span3">
-							<h3>{{ post.condition }}</h3>
+                            <p class="hidden-desktop"><strong>Condition: </strong> {{ post.condition }}</p>
+							<h3 class="hidden-phone">{{ post.condition }}</h3>
 						</div>
 						<form method="GET" action="{% url app.views.contactseller %}">
 							<div class="span3">
