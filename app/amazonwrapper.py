@@ -4,7 +4,7 @@ import BeautifulSoup
 import bottlenose
 
 AMAZON_API_KEY = 'AKIAI75ZQQCZ726SSJDA'
-AMAZON_SECRET_KEY = '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'
+AMAZON_SECRET_KEY = 'blah'
 AMAZON_ASSOC_TAG = 'books0ae3-20'
 
 def getBookInfoByIsbn(isbn):
